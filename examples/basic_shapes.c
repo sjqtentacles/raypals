@@ -95,13 +95,13 @@ int main(void)
                 // Draw grid for reference
                 DrawGrid(10, 1.0f);
                 
+                // Draw 3D shapes
+                Draw3DShape(cube, &camera);
+                Draw3DShape(sphere, &camera);
+                Draw3DShape(cone, &camera);
+                Draw3DShape(cylinder, &camera);
+                
             EndMode3D();
-            
-            // Draw the 3D shapes
-            Draw3DShape(cube, camera);
-            Draw3DShape(sphere, camera);
-            Draw3DShape(cone, camera);
-            Draw3DShape(cylinder, camera);
             
             // Draw instructions
             DrawText("Use arrow keys and Z/X to move camera", 20, 20, 20, DARKGRAY);

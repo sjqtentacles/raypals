@@ -1,213 +1,189 @@
 # RayPals
 
-A simple 2D/3D shape and sprite library built on top of [raylib](https://www.raylib.com/). RayPals makes it easy to create and manipulate geometric shapes and sprites in your raylib projects.
+RayPals is a simple 2D/3D shape and sprite library built on top of raylib. It provides an easy-to-use interface for creating and manipulating shapes, sprites, and 3D objects for game development.
 
 ![RayPals Demo](examples/game_scene.gif)
+![3D Sprites Example](examples/3d_sprites_example.gif)
 ![Basic Shapes](examples/basic_shapes.png)
 ![Sprite Gallery](examples/sprite_gallery.gif)
 
-## What Does This Do?
+## Features
 
-RayPals gives you ready-made shapes and sprites for your raylib games:
-- 🟥 Simple shapes: squares, circles, triangles
-- 🎮 Game characters: simple humans, robots, animals 
-- 🏠 Environment objects: trees, houses, clouds
-- 🚗 Vehicles: cars, tanks, boats
-- ⭐ Special effects: stars, lightning bolts
-- Everything is already colored and animated!
+- **Basic 2D Shapes**
+  - Square
+  - Rectangle
+  - Circle
+  - Triangle
+  - Star
+  - Polygon
+  - Arrow
 
-### Library Features
-- **41 pre-built sprites** ready to use in your games
-- **12 basic shapes** (8 2D shapes and 4 3D shapes)
-- **(More coming!)**
-- Characters: simple humans, robots, animals, soldiers, zombies, wizards, dragons
-- Fantasy objects: treasure chests, potions, swords, shields, gems, portals
-- Vehicles: cars, tanks, motorcycles, skateboards, sailboats, airplanes, UFOs
-- Environment: trees, clouds, houses, bushes, rocks, flowers, snowmen
-- Magic effects: stars, lightning bolts, explosions, portals
-- Simple interface for creating, positioning, and animating everything!
+- **Basic 3D Shapes**
+  - Cube
+  - Sphere
+  - Cone
+  - Cylinder
 
-## Super Easy Setup (No CMake Knowledge Required!)
+- **3D Models/Sprites**
+  - Tree (trunk and foliage)
+  - Robot (body, head, arms, and eyes)
+  - Spaceship (body, wings, cockpit, engines)
+  - More coming soon!
 
-### Method 1: Just Copy The Files! (Easiest)
+- **Sprite System**
+  - Combine multiple shapes into sprites
+  - Built-in sprite transformations (position, rotation, scale)
+  - Animation support
+  - Extensive collection of pre-built sprites
 
-1. Download this project (green "Code" button → "Download ZIP")
-2. Extract the ZIP file
-3. Copy these two files to your project:
-   - `src/raypals.c`
-   - `include/raypals.h`
-4. Include in your code:
-   ```c
-   #include "raypals.h"
+- **Pre-built Sprites**
+  - Characters (Simple Character, Robot, Animal, Ghost, etc.)
+  - Environment Objects (Tree, Cloud, House, Bush, Rock, etc.)
+  - Vehicles (Car, Tank, Motorcycle, Airplane, UFO, etc.)
+  - Items (Sword, Shield, Potion, Treasure Chest, etc.)
+  - Magic Effects (Star, Lightning, Portal, Explosion)
+  - UI Elements (Button, Health Bar)
+
+- **Animation Support**
+  - Scale animations
+  - Rotation animations
+  - Color transitions
+  - Custom animation properties
+
+## Installation
+
+1. Make sure you have raylib installed on your system
+2. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/raypals.git
    ```
-5. That's it! Use RayPals in your game!
+3. Build using CMake:
+   ```bash
+   mkdir build
+   cd build
+   cmake ..
+   cmake --build .
+   ```
 
-### Method 2: Using Make (Pre-made script)
+## Usage Examples
 
-We've included a simple script to build everything for you:
-
-```bash
-# Copy and paste these commands:
-git clone https://github.com/yourusername/raypals.git
-cd raypals
-./build_simple.sh  # Uses Make to build the library
-```
-
-## 5-Minute Getting Started Guide
+### Creating a Simple 2D Shape
 
 ```c
-#include "raylib.h"
-#include "raypals.h"  // Add this line to your code
+#include "raypals.h"
 
-int main() {
-    // Open a window like usual
-    InitWindow(800, 600, "My First RayPals Game");
-    SetTargetFPS(60);
+// Create a red square
+RayPals2DShape* square = CreateSquare(
+    (Vector2){ 100, 100 },  // position
+    50,                     // size
+    RED                     // color
+);
 
-    // Create a cool star ⭐
-    RayPals2DShape* star = CreateStar((Vector2){400, 300}, 100, 5, YELLOW);
-    
-    // Create a character 🧍
-    RayPalsSprite* character = CreateSimpleCharacter((Vector2){200, 400}, 80, BLUE, RED);
-    
-    // Game loop
-    while (!WindowShouldClose()) {
-        // Rotate the star (easy animation!)
-        RotateShape(star, GetFrameTime(), 45.0f);
-        
-        // Draw everything
-        BeginDrawing();
-            ClearBackground(RAYWHITE);
-            Draw2DShape(star);
-            DrawSprite(character);
-            DrawText("My First RayPals Game!", 20, 20, 20, DARKGRAY);
-        EndDrawing();
-    }
+// Draw the shape
+Draw2DShape(square);
 
-    // Clean up
-    FreeShape(star);
-    FreeSprite(character);
-    CloseWindow();
-    return 0;
-}
+// Don't forget to free when done
+FreeShape(square);
 ```
 
-## Compiling Your Game
+### Creating a Sprite
 
-### Windows:
-```
-gcc your_game.c raypals.c -o your_game.exe -lraylib -lopengl32 -lgdi32 -lwinmm
-```
-
-### Mac:
-```
-gcc your_game.c raypals.c -o your_game -lraylib -framework OpenGL -framework Cocoa
-```
-
-### Linux:
-```
-gcc your_game.c raypals.c -o your_game -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-```
-
-## Cool Objects You Can Create
-
-### Shapes
 ```c
-// Square (position, size, color)
-RayPals2DShape* square = CreateSquare((Vector2){100, 100}, 50, RED);
+#include "raypals.h"
 
-// Circle (position, radius, color)
-RayPals2DShape* circle = CreateCircle((Vector2){200, 200}, 40, BLUE);
+// Create a character sprite
+RayPalsSprite* character = CreateSimpleCharacter(
+    (Vector2){ 400, 300 },  // position
+    60,                     // size
+    BLUE,                   // body color
+    RED                     // head color
+);
 
-// Triangle (position, size, color)
-RayPals2DShape* triangle = CreateTriangle((Vector2){300, 300}, 60, GREEN);
+// Draw the sprite
+DrawSprite(character);
 
-// Star (position, size, points, color)
-RayPals2DShape* star = CreateStar((Vector2){400, 400}, 70, 5, YELLOW);
+// Free resources when done
+FreeSprite(character);
 ```
 
-### Ready-made Sprites
+### Creating and Manipulating 3D Models
+
 ```c
-// Character (position, size, body color, head color)
-RayPalsSprite* hero = CreateSimpleCharacter((Vector2){400, 300}, 80, BLUE, BEIGE);
+#include "raypals.h"
 
-// Robot (position, size, body color, eyes color)
-RayPalsSprite* robot = CreateRobotCharacter((Vector2){500, 300}, 70, GRAY, GREEN);
+// Create a 3D tree
+RayPals3DTree tree = Create3DTree(
+    (Vector3){ 0.0f, 0.0f, 0.0f },  // position
+    1.0f,                           // scale
+    BROWN,                          // trunk color
+    DARKGREEN                       // leaves color
+);
 
-// Tree (position, size, trunk color, leaves color)
-RayPalsSprite* tree = CreateSimpleTree((Vector2){100, 400}, 100, BROWN, DARKGREEN);
+// Create a 3D robot
+RayPals3DSprite* robot = Create3DRobot(
+    (Vector3){ 2.0f, 0.0f, 0.0f },  // position
+    1.0f,                           // scale
+    DARKGRAY,                       // body color
+    GREEN                           // detail color
+);
 
-// Car (position, size, body color, wheels color)
-RayPalsSprite* car = CreateCar((Vector2){300, 500}, 100, RED, BLACK);
+// Create a 3D spaceship
+RayPals3DSprite* spaceship = Create3DSpaceship(
+    (Vector3){ -2.0f, 2.0f, 0.0f }, // position
+    1.0f,                           // scale
+    LIGHTGRAY,                      // body color
+    SKYBLUE                         // glass color
+);
 
-// Dragon (position, size, body color, wing color)
-RayPalsSprite* dragon = CreateDragon((Vector2){200, 200}, 80, RED, ORANGE);
+// All 3D models can be easily rotated and animated
+Vector3 rotation = { 0.0f, animTime * 30.0f, 0.0f };  // Rotate around Y axis
+Set3DSpriteRotation(tree.sprite, rotation);
+Set3DSpriteRotation(robot, rotation);
+Set3DSpriteRotation(spaceship, rotation);
 
-// Wizard (position, size, robe color, hat color)
-RayPalsSprite* wizard = CreateWizard((Vector2){400, 200}, 70, PURPLE, BLUE);
+// Draw all 3D models with the standard 3D sprite drawing function
+Draw3DSprite(tree.sprite, camera);
+Draw3DSprite(robot, camera);
+Draw3DSprite(spaceship, camera);
 
-// UFO (position, size, body color, glow color)
-RayPalsSprite* ufo = CreateUFO((Vector2){600, 150}, 60, GRAY, GREEN);
-
-// Portal (position, size, outer color, inner color)
-RayPalsSprite* portal = CreatePortal((Vector2){500, 400}, 80, PURPLE, SKYBLUE);
+// Free resources when done
+Free3DTree(&tree);
+Free3DSprite(robot);
+Free3DSprite(spaceship);
 ```
 
-### Easy Animation
-```c
-// Rotate a shape (shape, time since last frame, speed in degrees/second)
-RotateShape(star, GetFrameTime(), 90.0f);
-
-// Rotate a sprite
-RotateSprite(car, GetFrameTime(), 45.0f);
-
-// Change position
-SetShapePosition(circle, (Vector2){mouseX, mouseY});  // Follow mouse!
-```
-
-## Still Want to Use CMake?
-
-If you're familiar with CMake, you can still use our CMake setup:
-
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/raypals.git
-cd raypals
-
-# Build with CMake
-mkdir build && cd build
-cmake ..
-cmake --build .
-
-# Link with your project
-# In your project's CMakeLists.txt:
-# add_subdirectory(path/to/raypals)
-# target_link_libraries(your_game raypals)
-```
+This approach integrates all 3D models with the standard sprite system. The `Draw3DSprite` function handles all 3D transformations and drawing, providing a unified interface for all 3D objects.
 
 ## Examples
 
-Look in the `examples` folder for complete demos:
-- `basic_shapes.c` - Creating simple shapes
-- `sprite_gallery.c` - All sprites in one demo
-- `game_scene.c` - A simple game scene with multiple objects
+The repository includes several example programs demonstrating different features:
 
-To run an example after building:
+- `basic_shapes.c`: Demonstrates basic 2D shape creation and manipulation
+- `shape_animation.c`: Shows how to animate shapes
+- `sprite_example.c`: Basic sprite usage
+- `sprite_gallery.c`: Showcases all available sprites and 3D models
+- `3d_sprites_example.c`: Demonstrates 3D forest scene creation and rendering
+- `game_scene.c`: Shows how to create a simple game scene
+
+Run the examples from the build directory:
 ```bash
-# From the build/examples directory:
-./sprite_gallery
+./examples/sprite_gallery
+./examples/3d_sprites_example
 ```
 
-## Need Help?
+## Documentation
 
-- Check out the `include/raypals.h` file for all available functions
-- Look at the examples in the `examples` folder 
-- If something's not working, make sure raylib is installed correctly
+For detailed API documentation, see the header file `include/raypals.h`. Each function and structure is documented with clear descriptions and usage information.
 
 ## License
 
-This is free software under the MIT License. Do whatever you want with it!
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgments
 
-- [raylib](https://www.raylib.com/) - The awesome library this is built on
+- Built on top of [raylib](https://www.raylib.com/)
+- Inspired by the need for simple, reusable game development components

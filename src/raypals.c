@@ -397,57 +397,64 @@ void Draw2DShape(RayPals2DShape* shape) {
     rlPopMatrix();
 }
 
-void Draw3DShape(RayPals3DShape* shape, Camera camera) {
+// Draw a 3D shape
+// If camera is NULL, assumes transformations are already set (e.g., called from Draw3DSprite)
+// If camera is provided, wraps drawing in BeginMode3D/EndMode3D
+void Draw3DShape(RayPals3DShape* shape, Camera *camera) { // Changed to Camera pointer
     if (!shape || !shape->visible) return;
+
+    bool calledDirectly = (camera != NULL);
+
+    if (calledDirectly) {
+        BeginMode3D(*camera);
+    }
+
+    rlPushMatrix();
     
-    // Begin 3D mode with the given camera
-    BeginMode3D(camera);
+    // Apply shape transformations (relative to current matrix state)
+    rlTranslatef(shape->position.x, shape->position.y, shape->position.z);
+    
+    // Apply rotations in order: Y (yaw), X (pitch), Z (roll)
+    rlRotatef(shape->rotation.y, 0.0f, 1.0f, 0.0f);
+    rlRotatef(shape->rotation.x, 1.0f, 0.0f, 0.0f);
+    rlRotatef(shape->rotation.z, 0.0f, 0.0f, 1.0f);
     
     switch (shape->type) {
-        case RAYPALS_CUBE: {
-            if (shape->wireframe) {
-                DrawCubeWires(shape->position, shape->size.x, shape->size.y, shape->size.z, shape->color);
-            } else {
-                DrawCube(shape->position, shape->size.x, shape->size.y, shape->size.z, shape->color);
-            }
-        } break;
-        
-        case RAYPALS_SPHERE: {
-            float radius = shape->size.x/2;
-            
-            if (shape->wireframe) {
-                DrawSphereWires(shape->position, radius, shape->segments, shape->segments, shape->color);
-            } else {
-                DrawSphere(shape->position, radius, shape->color);
-            }
-        } break;
-        
-        case RAYPALS_CONE: {
-            float radius = shape->size.x/2;
-            float height = shape->size.y;
-            
-            if (shape->wireframe) {
-                DrawCylinderWires(shape->position, radius, 0.0f, height, shape->segments, shape->color);
-            } else {
-                DrawCylinder(shape->position, radius, 0.0f, height, shape->segments, shape->color);
-            }
-        } break;
-        
-        case RAYPALS_CYLINDER: {
-            float radius = shape->size.x/2;
-            float height = shape->size.y;
-            
-            if (shape->wireframe) {
-                DrawCylinderWires(shape->position, radius, radius, height, shape->segments, shape->color);
-            } else {
-                DrawCylinder(shape->position, radius, radius, height, shape->segments, shape->color);
-            }
-        } break;
-        
-        default: break;
+        case RAYPALS_CUBE:
+            if (shape->wireframe)
+                DrawCubeWiresV((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size, shape->color); // Use literal Vector3 zero
+            else
+                DrawCubeV((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size, shape->color); // Use literal Vector3 zero
+            break;
+        case RAYPALS_SPHERE:
+            if (shape->wireframe)
+                DrawSphereWires((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size.x / 2.0f, shape->segments, shape->segments, shape->color); // Use literal Vector3 zero
+            else
+                DrawSphereEx((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size.x / 2.0f, shape->segments, shape->segments, shape->color); // Use literal Vector3 zero
+            break;
+        case RAYPALS_CONE:
+            // Draw cone using DrawCylinder with top radius 0
+            if (shape->wireframe)
+                DrawCylinderWires((Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, shape->size.x / 2.0f, shape->size.y, shape->segments, shape->color); // Use DrawCylinderWires
+            else
+                DrawCylinder((Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, shape->size.x / 2.0f, shape->size.y, shape->segments, shape->color); // Use DrawCylinder
+            break;
+        case RAYPALS_CYLINDER:
+            if (shape->wireframe)
+                DrawCylinderWires((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size.x / 2.0f, shape->size.x / 2.0f, shape->size.y, shape->segments, shape->color); // Use literal Vector3 zero
+            else
+                DrawCylinder((Vector3){ 0.0f, 0.0f, 0.0f }, shape->size.x / 2.0f, shape->size.x / 2.0f, shape->size.y, shape->segments, shape->color); // Use literal Vector3 zero
+            break;
+        default:
+            // Unknown or unsupported 3D shape type
+            break;
     }
-    
-    EndMode3D();
+
+    rlPopMatrix();
+
+    if (calledDirectly) {
+        EndMode3D();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -2455,4 +2462,283 @@ RayPalsSprite* CreateCannon(Vector2 position, float size, Color cannonColor, Col
     sprite->position = position;
     
     return sprite;
+}
+
+// ----------------------------------------------------------------------------
+// 3D Sprite Functions
+// ----------------------------------------------------------------------------
+
+RayPals3DSprite* Create3DSprite(int initialCapacity) {
+    RayPals3DSprite* sprite = (RayPals3DSprite*)malloc(sizeof(RayPals3DSprite));
+    if (sprite == NULL) return NULL;
+    
+    sprite->shapes = (RayPals3DShape**)malloc(sizeof(RayPals3DShape*) * initialCapacity);
+    if (sprite->shapes == NULL) {
+        free(sprite);
+        return NULL;
+    }
+    
+    sprite->shapeCount = 0;
+    sprite->position = (Vector3){ 0, 0, 0 };
+    sprite->rotation = (Vector3){ 0, 0, 0 };
+    sprite->scale = (Vector3){ 1, 1, 1 };
+    sprite->visible = true;
+    
+    return sprite;
+}
+
+void AddShapeTo3DSprite(RayPals3DSprite* sprite, RayPals3DShape* shape) {
+    if (!sprite || !shape) return;
+    
+    // Resize the array if needed
+    RayPals3DShape** newShapes = (RayPals3DShape**)realloc(sprite->shapes, 
+                                  sizeof(RayPals3DShape*) * (sprite->shapeCount + 1));
+    if (newShapes == NULL) return;
+    
+    sprite->shapes = newShapes;
+    sprite->shapes[sprite->shapeCount] = shape;
+    sprite->shapeCount++;
+}
+
+void Draw3DSprite(RayPals3DSprite* sprite, Camera camera) {
+    if (!sprite || !sprite->visible) return;
+    
+    // Save current matrix
+    rlPushMatrix();
+    
+    // Apply sprite transformations
+    rlTranslatef(sprite->position.x, sprite->position.y, sprite->position.z);
+    
+    // Apply rotations in order: Y (yaw), X (pitch), Z (roll)
+    rlRotatef(sprite->rotation.y, 0.0f, 1.0f, 0.0f);
+    rlRotatef(sprite->rotation.x, 1.0f, 0.0f, 0.0f);
+    rlRotatef(sprite->rotation.z, 0.0f, 0.0f, 1.0f);
+    
+    rlScalef(sprite->scale.x, sprite->scale.y, sprite->scale.z);
+    
+    // Draw all shapes in the sprite RELATIVE to the sprite's transform
+    // We assume Draw3DShape applies its own relative transforms correctly
+    // and doesn't need the camera parameter when called this way.
+    for (int i = 0; i < sprite->shapeCount; i++) {
+        // Pass a dummy camera or modify Draw3DShape to handle NULL?
+        // For now, let's assume Draw3DShape can handle drawing within the current matrix state.
+        // We will modify Draw3DShape if needed. Let's try calling it without the camera.
+        // NOTE: This will likely require modifying Draw3DShape signature or implementation.
+        Draw3DShape(sprite->shapes[i], NULL); // Removed camera parameter
+    }
+    
+    // Restore matrix
+    rlPopMatrix();
+}
+
+void Set3DSpritePosition(RayPals3DSprite* sprite, Vector3 position) {
+    if (sprite) sprite->position = position;
+}
+
+void Set3DSpriteRotation(RayPals3DSprite* sprite, Vector3 rotation) {
+    if (sprite) sprite->rotation = rotation;
+}
+
+void Set3DSpriteScale(RayPals3DSprite* sprite, Vector3 scale) {
+    if (sprite) sprite->scale = scale;
+}
+
+void Rotate3DSprite(RayPals3DSprite* sprite, float deltaTime, Vector3 speed) {
+    if (!sprite) return;
+    
+    sprite->rotation.x += speed.x * deltaTime;
+    sprite->rotation.y += speed.y * deltaTime;
+    sprite->rotation.z += speed.z * deltaTime;
+    
+    // Normalize rotations to 0-360 degrees
+    while (sprite->rotation.x >= 360.0f) sprite->rotation.x -= 360.0f;
+    while (sprite->rotation.x < 0.0f) sprite->rotation.x += 360.0f;
+    
+    while (sprite->rotation.y >= 360.0f) sprite->rotation.y -= 360.0f;
+    while (sprite->rotation.y < 0.0f) sprite->rotation.y += 360.0f;
+    
+    while (sprite->rotation.z >= 360.0f) sprite->rotation.z -= 360.0f;
+    while (sprite->rotation.z < 0.0f) sprite->rotation.z += 360.0f;
+}
+
+void Free3DSprite(RayPals3DSprite* sprite) {
+    if (!sprite) return;
+    
+    // Free all shapes in the sprite
+    for (int i = 0; i < sprite->shapeCount; i++) {
+        Free3DShape(sprite->shapes[i]);
+    }
+    
+    // Free the shapes array and the sprite itself
+    free(sprite->shapes);
+    free(sprite);
+}
+
+RayPals3DSprite* Create3DRobot(Vector3 position, float size, Color bodyColor, Color detailColor) {
+    RayPals3DSprite* sprite = Create3DSprite(6);
+    if (sprite == NULL) return NULL;
+    
+    // Robot body (main cube)
+    RayPals3DShape* body = CreateCube(
+        (Vector3){ 0, 0, 0 },
+        (Vector3){ size * 0.6f, size * 0.8f, size * 0.4f },
+        bodyColor
+    );
+    
+    // Robot head (smaller cube)
+    RayPals3DShape* head = CreateCube(
+        (Vector3){ 0, size * 0.6f, 0 },
+        (Vector3){ size * 0.4f, size * 0.4f, size * 0.4f },
+        bodyColor
+    );
+    
+    // Robot eyes (two small cylinders)
+    RayPals3DShape* leftEye = CreateCylinder(
+        (Vector3){ -size * 0.1f, size * 0.6f, size * 0.2f },
+        size * 0.05f,
+        size * 0.05f,
+        8,
+        detailColor
+    );
+    
+    RayPals3DShape* rightEye = CreateCylinder(
+        (Vector3){ size * 0.1f, size * 0.6f, size * 0.2f },
+        size * 0.05f,
+        size * 0.05f,
+        8,
+        detailColor
+    );
+    
+    // Robot arms (cylinders)
+    RayPals3DShape* leftArm = CreateCylinder(
+        (Vector3){ -size * 0.4f, 0, 0 },
+        size * 0.1f,
+        size * 0.6f,
+        8,
+        bodyColor
+    );
+    leftArm->rotation = (Vector3){ 0, 0, 90 };
+    
+    RayPals3DShape* rightArm = CreateCylinder(
+        (Vector3){ size * 0.4f, 0, 0 },
+        size * 0.1f,
+        size * 0.6f,
+        8,
+        bodyColor
+    );
+    rightArm->rotation = (Vector3){ 0, 0, -90 };
+    
+    // Add all shapes to the sprite
+    AddShapeTo3DSprite(sprite, body);
+    AddShapeTo3DSprite(sprite, head);
+    AddShapeTo3DSprite(sprite, leftEye);
+    AddShapeTo3DSprite(sprite, rightEye);
+    AddShapeTo3DSprite(sprite, leftArm);
+    AddShapeTo3DSprite(sprite, rightArm);
+    
+    // Set sprite position
+    Set3DSpritePosition(sprite, position);
+    
+    return sprite;
+}
+
+RayPals3DSprite* Create3DSpaceship(Vector3 position, float size, Color bodyColor, Color glassColor) {
+    RayPals3DSprite* sprite = Create3DSprite(5);
+    if (sprite == NULL) return NULL;
+    
+    // Main body (elongated cube)
+    RayPals3DShape* body = CreateCube(
+        (Vector3){ 0, 0, 0 },
+        (Vector3){ size * 1.5f, size * 0.3f, size * 0.8f },
+        bodyColor
+    );
+    
+    // Cockpit (sphere)
+    RayPals3DShape* cockpit = CreateSphere(
+        (Vector3){ size * 0.4f, size * 0.2f, 0 },
+        size * 0.2f,
+        16,
+        glassColor
+    );
+    
+    // Wings (two flat cubes)
+    RayPals3DShape* leftWing = CreateCube(
+        (Vector3){ 0, 0, -size * 0.6f },
+        (Vector3){ size * 0.8f, size * 0.1f, size * 0.4f },
+        bodyColor
+    );
+    
+    RayPals3DShape* rightWing = CreateCube(
+        (Vector3){ 0, 0, size * 0.6f },
+        (Vector3){ size * 0.8f, size * 0.1f, size * 0.4f },
+        bodyColor
+    );
+    
+    // Engine (cylinder)
+    RayPals3DShape* engine = CreateCylinder(
+        (Vector3){ -size * 0.6f, 0, 0 },
+        size * 0.2f,
+        size * 0.3f,
+        12,
+        bodyColor
+    );
+    engine->rotation = (Vector3){ 0, 0, 90 };
+    
+    // Add all shapes to the sprite
+    AddShapeTo3DSprite(sprite, body);
+    AddShapeTo3DSprite(sprite, cockpit);
+    AddShapeTo3DSprite(sprite, leftWing);
+    AddShapeTo3DSprite(sprite, rightWing);
+    AddShapeTo3DSprite(sprite, engine);
+    
+    // Set sprite position
+    Set3DSpritePosition(sprite, position);
+    
+    return sprite;
+}
+
+RayPals3DTree Create3DTree(Vector3 position, float scale, Color trunkColor, Color leavesColor) {
+    RayPals3DTree tree = { 0 };
+    tree.position = position;
+    tree.rotation = (Vector3){ 0.0f, 0.0f, 0.0f };
+    tree.scale = scale;
+    
+    // Create a 3D sprite with 2 shapes
+    tree.sprite = Create3DSprite(2);
+    if (!tree.sprite) return tree;
+    
+    // Set sprite position and scale
+    Set3DSpritePosition(tree.sprite, position);
+    Set3DSpriteScale(tree.sprite, (Vector3){ 1.0f, 1.0f, 1.0f });
+
+    // Create trunk (cylinder)
+    RayPals3DShape* trunk = CreateCylinder(
+        (Vector3){ 0, scale, 0 },  // Relative to tree position
+        0.3f * scale,
+        2.0f * scale,
+        12,
+        trunkColor
+    );
+    
+    // Create leaves (cone)
+    RayPals3DShape* leaves = CreateCone(
+        (Vector3){ 0, 3.0f * scale, 0 },  // Relative to tree position
+        1.5f * scale,
+        2.5f * scale,
+        12,
+        leavesColor
+    );
+    
+    // Add shapes to sprite
+    AddShapeTo3DSprite(tree.sprite, trunk);
+    AddShapeTo3DSprite(tree.sprite, leaves);
+
+    return tree;
+}
+
+void Free3DTree(RayPals3DTree* tree) {
+    if (tree && tree->sprite) {
+        Free3DSprite(tree->sprite);
+        tree->sprite = NULL;
+    }
 }

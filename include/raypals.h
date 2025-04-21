@@ -23,6 +23,7 @@
 #define RAYPALS_H
 
 #include <raylib.h>
+#include <rlgl.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus
@@ -124,6 +125,34 @@ typedef struct {
     float scale;               ///< Master scale factor
     bool visible;              ///< Visibility flag
 } RayPalsSprite;
+
+/**
+ * @brief Structure representing a 3D sprite (collection of 3D shapes)
+ * 
+ * A 3D sprite is a collection of 3D shapes that can be manipulated as a single unit.
+ * It supports position, rotation, and scale transformations that affect all shapes.
+ */
+typedef struct {
+    RayPals3DShape** shapes;   ///< Array of pointers to 3D shapes
+    int shapeCount;            ///< Number of shapes in the sprite
+    Vector3 position;          ///< Master position in 3D space
+    Vector3 rotation;          ///< Master rotation (x, y, z in degrees)
+    Vector3 scale;             ///< Master scale factor for each axis
+    bool visible;              ///< Visibility flag
+} RayPals3DSprite;
+
+/**
+ * @brief Structure representing a 3D tree
+ * 
+ * A 3D tree is implemented as a specialized 3D sprite.
+ * Use Draw3DSprite to render trees.
+ */
+typedef struct {
+    RayPals3DSprite* sprite;  ///< The sprite containing tree shapes
+    Vector3 position;         ///< Tree position (duplicate of sprite position for convenience)
+    Vector3 rotation;         ///< Tree rotation (duplicate of sprite rotation for convenience)
+    float scale;              ///< Tree scale
+} RayPals3DTree;
 
 /**
  * @brief Creates a square shape
@@ -467,7 +496,7 @@ void Draw2DShape(RayPals2DShape* shape);
  * @param shape The shape to draw
  * @param camera The camera to use for 3D rendering
  */
-void Draw3DShape(RayPals3DShape* shape, Camera camera);
+void Draw3DShape(RayPals3DShape* shape, Camera *camera);
 
 /**
  * @brief Draws a sprite
@@ -849,6 +878,110 @@ RayPalsSprite* CreatePotion(Vector2 position, float size, Color bottleColor, Col
  * @return A pointer to the created cannon sprite
  */
 RayPalsSprite* CreateCannon(Vector2 position, float size, Color cannonColor, Color wheelColor);
+
+/**
+ * @brief Creates a new 3D sprite with the specified initial capacity
+ * 
+ * @param initialCapacity The initial number of shapes the sprite can hold
+ * @return A pointer to the created 3D sprite
+ */
+RayPals3DSprite* Create3DSprite(int initialCapacity);
+
+/**
+ * @brief Adds a 3D shape to a 3D sprite
+ * 
+ * @param sprite The sprite to add the shape to
+ * @param shape The shape to add
+ */
+void AddShapeTo3DSprite(RayPals3DSprite* sprite, RayPals3DShape* shape);
+
+/**
+ * @brief Draws a 3D sprite
+ * 
+ * @param sprite The sprite to draw
+ * @param camera The camera to use for 3D rendering
+ */
+void Draw3DSprite(RayPals3DSprite* sprite, Camera camera);
+
+/**
+ * @brief Sets the position of a 3D sprite
+ * 
+ * @param sprite The sprite to modify
+ * @param position The new position
+ */
+void Set3DSpritePosition(RayPals3DSprite* sprite, Vector3 position);
+
+/**
+ * @brief Sets the rotation of a 3D sprite
+ * 
+ * @param sprite The sprite to modify
+ * @param rotation The new rotation in degrees (x, y, z)
+ */
+void Set3DSpriteRotation(RayPals3DSprite* sprite, Vector3 rotation);
+
+/**
+ * @brief Sets the scale of a 3D sprite
+ * 
+ * @param sprite The sprite to modify
+ * @param scale The new scale factors (x, y, z)
+ */
+void Set3DSpriteScale(RayPals3DSprite* sprite, Vector3 scale);
+
+/**
+ * @brief Rotates a 3D sprite by a given speed
+ * 
+ * @param sprite The sprite to rotate
+ * @param deltaTime The time elapsed since the last update
+ * @param speed The rotation speed in degrees per second (x, y, z)
+ */
+void Rotate3DSprite(RayPals3DSprite* sprite, float deltaTime, Vector3 speed);
+
+/**
+ * @brief Frees the memory allocated for a 3D sprite
+ * 
+ * @param sprite The sprite to free
+ */
+void Free3DSprite(RayPals3DSprite* sprite);
+
+/**
+ * @brief Creates a 3D robot sprite
+ * 
+ * @param position The position in 3D space
+ * @param size The overall size of the robot
+ * @param bodyColor The main color of the robot's body
+ * @param detailColor The color for details and accents
+ * @return A pointer to the created 3D robot sprite
+ */
+RayPals3DSprite* Create3DRobot(Vector3 position, float size, Color bodyColor, Color detailColor);
+
+/**
+ * @brief Creates a 3D spaceship sprite
+ * 
+ * @param position The position in 3D space
+ * @param size The overall size of the spaceship
+ * @param bodyColor The main color of the ship's body
+ * @param glassColor The color for windows and cockpit
+ * @return A pointer to the created 3D spaceship sprite
+ */
+RayPals3DSprite* Create3DSpaceship(Vector3 position, float size, Color bodyColor, Color glassColor);
+
+/**
+ * @brief Creates a 3D tree with trunk and leaves
+ * 
+ * @param position The position in 3D space
+ * @param scale The overall size scale of the tree
+ * @param trunkColor The color of the tree trunk
+ * @param leavesColor The color of the tree leaves/foliage
+ * @return RayPals3DTree structure containing the tree
+ */
+RayPals3DTree Create3DTree(Vector3 position, float scale, Color trunkColor, Color leavesColor);
+
+/**
+ * @brief Frees the memory allocated for a 3D tree
+ * 
+ * @param tree Pointer to the tree structure to free
+ */
+void Free3DTree(RayPals3DTree* tree);
 
 #ifdef __cplusplus
 }

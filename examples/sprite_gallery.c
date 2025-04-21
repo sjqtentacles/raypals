@@ -1,6 +1,6 @@
 /*******************************************************************************************
 *
-*   RayPals [Sprite Gallery] - Example demonstrating all available sprite types
+*   RayPals [Sprite Gallery] - Example demonstrating all available sprite types and 3D shapes
 *
 *   This example has been created using raylib 4.0 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
@@ -23,14 +23,22 @@ typedef struct {
     bool animated;
 } SpriteInfo;
 
+// Structure to store 3D thumbnail info
+typedef struct {
+    const char* name;
+    const char* category;
+    Color primaryColor;
+    Color secondaryColor;
+} ThreeDModelInfo;
+
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int screenWidth = 1024;
+    const int screenHeight = 768;
 
-    InitWindow(screenWidth, screenHeight, "RayPals - Sprite Gallery");
+    InitWindow(screenWidth, screenHeight, "RayPals - Sprite Gallery & 3D Shapes");
     
     // Define sprite grid properties
     const int gridCols = 4;       // Number of columns in the grid
@@ -95,29 +103,26 @@ int main(void)
         { CreateHealthBar((Vector2){0, 0}, 100, 0.75f, RED, GREEN), "Health Bar", "UI", false }
     };
     
-    // Debug: Print info about the rock sprite
-    for (int i = 0; i < sizeof(sprites) / sizeof(sprites[0]); i++) {
-        if (strcmp(sprites[i].name, "Rock") == 0) {
-            printf("DEBUG: Rock sprite found at index %d with %d shapes\n", 
-                   i, sprites[i].sprite->shapeCount);
-            break;
-        }
-    }
-    
-    // Debug: Print info about the star sprite
-    for (int i = 0; i < sizeof(sprites) / sizeof(sprites[0]); i++) {
-        if (strcmp(sprites[i].name, "Star") == 0) {
-            printf("DEBUG: Star sprite found at index %d with %d shapes\n", 
-                   i, sprites[i].sprite->shapeCount);
-            if (sprites[i].sprite->shapeCount > 0) {
-                printf("DEBUG: Star visibility: %d\n", sprites[i].sprite->visible);
-            }
-            break;
-        }
-    }
-    
+    // 3D models info for thumbnails
+    ThreeDModelInfo models3D[] = {
+        // Trees
+        { "Pine Tree (3D)", "3D Models", BROWN, DARKGREEN },
+        { "Oak Tree (3D)", "3D Models", DARKBROWN, LIME },
+        { "Autumn Tree (3D)", "3D Models", BROWN, ORANGE },
+        
+        // Robots
+        { "Green Robot (3D)", "3D Models", DARKGRAY, GREEN },
+        { "Blue Robot (3D)", "3D Models", BLUE, RED },
+        
+        // Spaceships
+        { "Silver Spaceship (3D)", "3D Models", LIGHTGRAY, SKYBLUE },
+        { "Red Spaceship (3D)", "3D Models", RED, YELLOW }
+    };
+
     const int spriteCount = sizeof(sprites) / sizeof(sprites[0]);
-    const int gridRows = (spriteCount + gridCols - 1) / gridCols; // Calculate number of rows needed
+    const int models3DCount = sizeof(models3D) / sizeof(models3D[0]);
+    const int totalItemCount = spriteCount + models3DCount;
+    const int gridRows = (totalItemCount + gridCols - 1) / gridCols; // Calculate number of rows needed
     const int totalHeight = gridRows * cellHeight;
     
     // Animation variables
@@ -133,7 +138,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         float deltaTime = GetFrameTime();
         animTime += deltaTime;
-        
+
         // Handle scrolling
         if (GetMouseWheelMove() != 0)
             scrollY -= GetMouseWheelMove() * scrollSpeed * deltaTime;
@@ -217,67 +222,136 @@ int main(void)
                 }
             }
         }
-        //----------------------------------------------------------------------------------
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
+        ClearBackground(RAYWHITE);
 
-            ClearBackground(RAYWHITE);
+        // Draw 2D sprites
+        // Draw sprites in a grid
+        for (int i = 0; i < spriteCount; i++) {
+            int col = i % gridCols;
+            int row = i / gridCols;
             
-            // Draw sprites in a grid
-            for (int i = 0; i < spriteCount; i++) {
-                int col = i % gridCols;
-                int row = i / gridCols;
+            float x = col * cellWidth + cellWidth/2 + cellPadding;
+            float y = row * cellHeight + cellHeight/2 + cellPadding - scrollY;
+            
+            // Only draw sprites that are visible on screen
+            if (y >= -cellHeight && y <= screenHeight + cellHeight) {
+                // Draw cell background based on category
+                Rectangle cellRect = { 
+                    col * cellWidth + cellPadding/2, 
+                    row * cellHeight + cellPadding/2 - scrollY, 
+                    cellWidth - cellPadding, 
+                    cellHeight - cellPadding 
+                };
                 
-                float x = col * cellWidth + cellWidth/2 + cellPadding;
-                float y = row * cellHeight + cellHeight/2 + cellPadding - scrollY;
+                Color categoryColor;
+                if (strcmp(sprites[i].category, "Characters") == 0)
+                    categoryColor = (Color){ 230, 240, 255, 255 }; // Light blue
+                else if (strcmp(sprites[i].category, "Environment") == 0)
+                    categoryColor = (Color){ 230, 255, 230, 255 }; // Light green
+                else
+                    categoryColor = (Color){ 255, 240, 230, 255 }; // Light orange
                 
-                // Only draw sprites that are visible on screen
-                if (y >= -cellHeight && y <= screenHeight + cellHeight) {
-                    // Draw cell background based on category
-                    Rectangle cellRect = { 
-                        col * cellWidth + cellPadding/2, 
-                        row * cellHeight + cellPadding/2 - scrollY, 
-                        cellWidth - cellPadding, 
-                        cellHeight - cellPadding 
-                    };
-                    
-                    Color categoryColor;
-                    if (strcmp(sprites[i].category, "Characters") == 0)
-                        categoryColor = (Color){ 230, 240, 255, 255 }; // Light blue
-                    else if (strcmp(sprites[i].category, "Environment") == 0)
-                        categoryColor = (Color){ 230, 255, 230, 255 }; // Light green
-                    else
-                        categoryColor = (Color){ 255, 240, 230, 255 }; // Light orange
-                    
-                    DrawRectangleRec(cellRect, categoryColor);
-                    DrawRectangleLinesEx(cellRect, 1, LIGHTGRAY);
-                    
-                    // Position sprite in cell
-                    SetSpritePosition(sprites[i].sprite, (Vector2){ x, y });
-                    
-                    // Draw the sprite
-                    DrawSprite(sprites[i].sprite);
-                    
-                    // Draw sprite name
-                    DrawText(sprites[i].name, 
-                        col * cellWidth + cellPadding, 
-                        row * cellHeight + cellHeight - 40 - scrollY, 
-                        16, DARKGRAY);
-                    
-                    // Draw category
-                    DrawText(sprites[i].category, 
-                        col * cellWidth + cellPadding, 
-                        row * cellHeight + cellHeight - 20 - scrollY, 
-                        13, GRAY);
-                }
+                DrawRectangleRec(cellRect, categoryColor);
+                DrawRectangleLinesEx(cellRect, 1, LIGHTGRAY);
+                
+                // Position sprite in cell
+                SetSpritePosition(sprites[i].sprite, (Vector2){ x, y });
+                
+                // Draw the sprite
+                DrawSprite(sprites[i].sprite);
+                
+                // Draw sprite name
+                DrawText(sprites[i].name, 
+                    col * cellWidth + cellPadding, 
+                    row * cellHeight + cellHeight - 40 - scrollY, 
+                    16, DARKGRAY);
+                
+                // Draw category
+                DrawText(sprites[i].category, 
+                    col * cellWidth + cellPadding, 
+                    row * cellHeight + cellHeight - 20 - scrollY, 
+                    13, GRAY);
             }
+        }
+        
+        // Draw 3D model thumbnails
+        for (int i = 0; i < models3DCount; i++) {
+            int index = spriteCount + i;
+            int col = index % gridCols;
+            int row = index / gridCols;
             
-            // Draw instructions
-            DrawRectangle(0, 0, screenWidth, 40, Fade(RAYWHITE, 0.8f));
-            DrawText("Use mouse wheel to scroll through the sprite gallery", 20, 10, 20, DARKGRAY);
-            DrawFPS(screenWidth - 100, 10);
+            float x = col * cellWidth + cellWidth/2 + cellPadding;
+            float y = row * cellHeight + cellHeight/2 + cellPadding - scrollY;
+            
+            // Only draw cells that are visible on screen
+            if (y >= -cellHeight && y <= screenHeight + cellHeight) {
+                // Draw cell background
+                Rectangle cellRect = { 
+                    col * cellWidth + cellPadding/2, 
+                    row * cellHeight + cellPadding/2 - scrollY, 
+                    cellWidth - cellPadding, 
+                    cellHeight - cellPadding 
+                };
+                
+                // 3D models get a special color
+                Color categoryColor = (Color){ 240, 230, 255, 255 }; // Light purple
+                
+                DrawRectangleRec(cellRect, categoryColor);
+                DrawRectangleLinesEx(cellRect, 1, LIGHTGRAY);
+                
+                // Draw 3D model icon (simplified representation)
+                if (strstr(models3D[i].name, "Tree")) {
+                    // Draw tree icon
+                    DrawRectangle(x - 10, y, 20, 50, models3D[i].primaryColor); // Trunk
+                    DrawTriangle(
+                        (Vector2){x, y - 50}, 
+                        (Vector2){x - 40, y + 10}, 
+                        (Vector2){x + 40, y + 10}, 
+                        models3D[i].secondaryColor); // Leaves
+                } else if (strstr(models3D[i].name, "Robot")) {
+                    // Draw robot icon
+                    DrawRectangle(x - 25, y - 20, 50, 40, models3D[i].primaryColor); // Body
+                    DrawRectangle(x - 15, y - 40, 30, 20, models3D[i].primaryColor); // Head
+                    DrawCircle(x - 5, y - 30, 5, models3D[i].secondaryColor); // Eye
+                    DrawCircle(x + 5, y - 30, 5, models3D[i].secondaryColor); // Eye
+                    DrawRectangle(x - 35, y, 10, 30, models3D[i].primaryColor); // Arm
+                    DrawRectangle(x + 25, y, 10, 30, models3D[i].primaryColor); // Arm
+                } else if (strstr(models3D[i].name, "Spaceship")) {
+                    // Draw spaceship icon
+                    DrawTriangle(
+                        (Vector2){x, y - 20}, 
+                        (Vector2){x - 30, y + 20}, 
+                        (Vector2){x + 30, y + 20}, 
+                        models3D[i].primaryColor); // Body
+                    DrawCircle(x, y, 10, models3D[i].secondaryColor); // Cockpit
+                }
+                
+                // Draw 3D badge
+                DrawRectangle(x - 15, y - 50, 30, 20, RED);
+                DrawText("3D", x - 10, y - 47, 16, WHITE);
+                
+                // Draw model name
+                DrawText(models3D[i].name, 
+                    col * cellWidth + cellPadding, 
+                    row * cellHeight + cellHeight - 40 - scrollY, 
+                    16, DARKGRAY);
+                
+                // Draw category
+                DrawText(models3D[i].category, 
+                    col * cellWidth + cellPadding, 
+                    row * cellHeight + cellHeight - 20 - scrollY, 
+                    13, GRAY);
+            }
+        }
+        
+        // Draw instructions
+        DrawRectangle(0, 0, screenWidth, 40, Fade(RAYWHITE, 0.8f));
+        DrawText("Use mouse wheel to scroll through the sprite gallery", 20, 10, 20, DARKGRAY);
+        DrawFPS(screenWidth - 100, 10);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -285,11 +359,12 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    // Free all sprites
+    
+    // Free sprites
     for (int i = 0; i < spriteCount; i++) {
         FreeSprite(sprites[i].sprite);
     }
-    
+
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
