@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: raypals
+Description: A toolkit for quickly displaying 2D and 3D shapes in Raylib
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lraypals
+Cflags: -I${includedir}
+Requires: raylib

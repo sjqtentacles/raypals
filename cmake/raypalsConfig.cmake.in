@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+# Find dependencies
+include(CMakeFindDependencyMacro)
+find_dependency(raylib REQUIRED)
+
+# Import targets
+include("${CMAKE_CURRENT_LIST_DIR}/raypalsTargets.cmake") 

@@ -1,0 +1,103 @@
+==========================================
+HOW TO BUILD AND RUN RAYPALS EXAMPLES
+==========================================
+
+Don't know how to compile C code? No problem! Just follow these easy steps:
+
+WINDOWS:
+--------
+1. Install MinGW (a compiler for Windows):
+   - Download from: https://sourceforge.net/projects/mingw/
+   - During installation, select the "gcc" and "g++" packages
+
+2. Install raylib:
+   - Download from: https://github.com/raysan5/raylib/releases
+   - Get the raylib-XX-mingw-win64.zip file
+   - Extract it somewhere like C:\raylib
+
+3. RUN THE SIMPLE BUILD SCRIPT:
+   - Double-click on build_simple.bat
+   - If it complains about raylib, edit build_simple.bat and update the RAYLIB_PATH
+   - After it finishes, go to the "bin" folder and double-click on any .exe file!
+
+OR COMPILE MANUALLY:
+   - Open Command Prompt (type "cmd" in Windows search)
+   - Navigate to your raypals folder:
+     > cd path\to\raypals
+   - Compile the example:
+     > gcc simple_example.c src\raypals.c -o example.exe -I include -I C:\raylib\include -L C:\raylib\lib -lraylib -lopengl32 -lgdi32 -lwinmm
+   - Run it:
+     > example.exe
+
+
+MAC:
+----
+1. Install Command Line Tools:
+   - Open Terminal
+   - Run: xcode-select --install
+   - Click "Install" in the popup
+
+2. Install raylib:
+   - With Homebrew (https://brew.sh/):
+     > brew install raylib
+   - OR manually from: https://github.com/raysan5/raylib/releases
+
+3. RUN THE SIMPLE BUILD SCRIPT:
+   - Open Terminal
+   - Navigate to your raypals folder:
+     > cd path/to/raypals
+   - Make the script executable:
+     > chmod +x build_simple.sh
+   - Run it:
+     > ./build_simple.sh
+   - After it finishes, try an example:
+     > cd bin
+     > ./sprite_gallery
+
+OR COMPILE MANUALLY:
+   - Compile directly:
+     > gcc simple_example.c src/raypals.c -o example -I include -lraylib -framework OpenGL -framework Cocoa
+   - Run it:
+     > ./example
+
+
+LINUX:
+------
+1. Install a compiler and raylib dependencies:
+   > sudo apt update
+   > sudo apt install build-essential git libglfw3-dev libglfw3 libopenal-dev
+
+2. Install raylib:
+   > git clone https://github.com/raysan5/raylib.git
+   > cd raylib/src
+   > make PLATFORM=PLATFORM_DESKTOP
+   > sudo make install
+
+3. RUN THE SIMPLE BUILD SCRIPT:
+   - Open Terminal
+   - Navigate to your raypals folder:
+     > cd path/to/raypals
+   - Make the script executable:
+     > chmod +x build_simple.sh
+   - Run it:
+     > ./build_simple.sh
+   - After it finishes, try an example:
+     > cd bin
+     > ./sprite_gallery
+
+OR COMPILE MANUALLY:
+   - Compile directly:
+     > gcc simple_example.c src/raypals.c -o example -I include -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+   - Run it:
+     > ./example
+
+
+TROUBLESHOOTING:
+---------------
+* "raylib.h not found" - Make sure raylib is installed and the include path is correct
+* "Cannot open raylib library" - Make sure raylib library is installed and in your library path
+* "raypals.h not found" - Make sure you're in the right directory or specify the path to include/raypals.h
+
+STILL NEED HELP?
+---------------
+Check out the raylib Discord or the raylib cheatsheet: https://www.raylib.com/cheatsheet/cheatsheet.html 

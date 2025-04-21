@@ -1,0 +1,37 @@
+{
+  "name": "raypals",
+  "version": "0.1.0",
+  "description": "A simple 2D/3D shape and sprite library built on top of raylib",
+  "homepage": "https://github.com/yourusername/raypals",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/raypals.git"
+  },
+  "keywords": [
+    "raylib",
+    "2d",
+    "3d",
+    "graphics",
+    "game",
+    "shapes",
+    "sprites"
+  ],
+  "author": "RayPals Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/raypals/issues"
+  },
+  "files": [
+    "include/",
+    "src/",
+    "CMakeLists.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "cmake -B build && cmake --build build",
+    "build:examples": "cmake -B build -DBUILD_EXAMPLES=ON && cmake --build build",
+    "build:tests": "cmake -B build -DBUILD_TESTS=ON && cmake --build build",
+    "test": "cmake -B build -DBUILD_TESTS=ON && cmake --build build && cd build && ctest"
+  }
+} 
