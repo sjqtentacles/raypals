@@ -2,7 +2,9 @@
 
 A simple 2D/3D shape and sprite library built on top of [raylib](https://www.raylib.com/). RayPals makes it easy to create and manipulate geometric shapes and sprites in your raylib projects.
 
-![RayPals Demo](https://placeholder-for-screenshot.com/screenshot.png)
+![RayPals Demo](examples/game_scene.gif)
+![Basic Shapes](examples/basic_shapes.png)
+![Sprite Gallery](examples/sprite_gallery.png)
 
 ## What Does This Do?
 
