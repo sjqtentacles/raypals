@@ -19,6 +19,7 @@ set(EXAMPLE_NAMES
     sprite_gallery
     game_scene
     3d_sprites_example
+    3d_robot_example
 )
 
 # Create a target for each example
