@@ -9,6 +9,7 @@ void test_circle_creation();
 void test_sprite_creation();
 void test_shape_manipulation();
 void test_animation();
+void test_3d_robot_creation();
 
 int main() {
     // Initialize raylib window for testing
@@ -23,6 +24,7 @@ int main() {
     test_sprite_creation();
     test_shape_manipulation();
     test_animation();
+    test_3d_robot_creation();
 
     printf("All tests completed!\n");
 
@@ -221,4 +223,81 @@ void test_animation() {
     
     printf("PASS: Animation test completed\n");
     FreeShape(shape);
+}
+
+void test_3d_robot_creation() {
+    printf("\nTesting 3D robot creation...\n");
+    
+    // Create a 3D robot
+    Vector3 position = {0.0f, 1.0f, 0.0f};
+    float size = 2.0f;
+    Color bodyColor = RED;
+    Color detailColor = YELLOW;
+    
+    RayPals3DSprite* robot = Create3DRobot(position, size, bodyColor, detailColor);
+    
+    if (robot == NULL) {
+        printf("FAIL: 3D robot creation failed\n");
+        return;
+    }
+    
+    // Verify robot properties
+    if (robot->shapeCount != 6) {  // Robot should have 6 parts: body, head, 2 eyes, 2 arms
+        printf("FAIL: 3D robot shape count incorrect (expected 6, got %d)\n", robot->shapeCount);
+    }
+    
+    if (robot->position.x != position.x || 
+        robot->position.y != position.y || 
+        robot->position.z != position.z) {
+        printf("FAIL: 3D robot position incorrect\n");
+    }
+    
+    // Test robot body (first shape)
+    RayPals3DShape* body = robot->shapes[0];
+    if (body->type != RAYPALS_CUBE) {
+        printf("FAIL: 3D robot body should be a cube\n");
+    }
+    
+    if (body->color.r != bodyColor.r || 
+        body->color.g != bodyColor.g || 
+        body->color.b != bodyColor.b) {
+        printf("FAIL: 3D robot body color incorrect\n");
+    }
+    
+    // Test robot eyes (shapes 2 and 3)
+    RayPals3DShape* leftEye = robot->shapes[2];
+    RayPals3DShape* rightEye = robot->shapes[3];
+    
+    if (leftEye->type != RAYPALS_CYLINDER || rightEye->type != RAYPALS_CYLINDER) {
+        printf("FAIL: 3D robot eyes should be cylinders\n");
+    }
+    
+    if (leftEye->color.r != detailColor.r || 
+        leftEye->color.g != detailColor.g || 
+        leftEye->color.b != detailColor.b) {
+        printf("FAIL: 3D robot eye color incorrect\n");
+    }
+    
+    // Test rotation functions
+    Vector3 rotation = {10.0f, 20.0f, 30.0f};
+    Set3DSpriteRotation(robot, rotation);
+    
+    if (robot->rotation.x != rotation.x || 
+        robot->rotation.y != rotation.y || 
+        robot->rotation.z != rotation.z) {
+        printf("FAIL: 3D robot rotation setting failed\n");
+    }
+    
+    // Test position setting
+    Vector3 newPos = {5.0f, 5.0f, 5.0f};
+    Set3DSpritePosition(robot, newPos);
+    
+    if (robot->position.x != newPos.x || 
+        robot->position.y != newPos.y || 
+        robot->position.z != newPos.z) {
+        printf("FAIL: 3D robot position setting failed\n");
+    }
+    
+    printf("PASS: 3D robot creation test completed\n");
+    Free3DSprite(robot);
 } 

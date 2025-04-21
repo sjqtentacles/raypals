@@ -163,12 +163,31 @@ The repository includes several example programs demonstrating different feature
 - `sprite_example.c`: Basic sprite usage
 - `sprite_gallery.c`: Showcases all available sprites and 3D models
 - `3d_sprites_example.c`: Demonstrates 3D forest scene creation and rendering
+- `3d_robot_example.c`: Shows how to create, manipulate, and animate 3D robots
 - `game_scene.c`: Shows how to create a simple game scene
 
 Run the examples from the build directory:
 ```bash
 ./examples/sprite_gallery
 ./examples/3d_sprites_example
+./examples/3d_robot_example
+```
+
+## Tests
+
+The project includes a test suite to verify the functionality of key components:
+
+- 2D shape creation and manipulation
+- Sprite creation and composition
+- Animation support
+- 3D robot creation and manipulation
+
+Run the tests with:
+```bash
+mkdir build && cd build
+cmake .. -DBUILD_TESTS=ON
+cmake --build .
+ctest
 ```
 
 ## Documentation
@@ -182,6 +201,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+See the CONTRIBUTING.md file for more details on how to contribute to the project.
 
 ## Acknowledgments
 
