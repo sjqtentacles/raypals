@@ -717,6 +717,139 @@ RayPalsSprite* CreateFish(Vector2 position, float size, Color bodyColor, Color f
  */
 RayPalsSprite* CreateGem(Vector2 position, float size, Color color);
 
+/**
+ * @brief Creates an explosion sprite
+ * 
+ * @param position The center position of the explosion
+ * @param size The size of the explosion
+ * @param primaryColor The main color of the explosion
+ * @param secondaryColor The secondary color of the explosion
+ * @return A pointer to the created explosion sprite
+ */
+RayPalsSprite* CreateExplosion(Vector2 position, float size, Color primaryColor, Color secondaryColor);
+
+/**
+ * @brief Creates an airplane sprite
+ * 
+ * @param position The center position of the airplane
+ * @param size The size of the airplane
+ * @param bodyColor The color of the airplane body
+ * @param detailColor The color of the airplane details
+ * @return A pointer to the created airplane sprite
+ */
+RayPalsSprite* CreateAirplane(Vector2 position, float size, Color bodyColor, Color detailColor);
+
+/**
+ * @brief Creates a soldier sprite
+ * 
+ * @param position The center position of the soldier
+ * @param size The size of the soldier
+ * @param uniformColor The color of the soldier's uniform
+ * @param skinColor The color of the soldier's skin
+ * @return A pointer to the created soldier sprite
+ */
+RayPalsSprite* CreateSoldier(Vector2 position, float size, Color uniformColor, Color skinColor);
+
+/**
+ * @brief Creates a zombie sprite
+ * 
+ * @param position The center position of the zombie
+ * @param size The size of the zombie
+ * @param skinColor The base color of the zombie's skin (will be adjusted for zombie appearance)
+ * @param clothesColor The color of the zombie's clothes
+ * @return A pointer to the created zombie sprite
+ */
+RayPalsSprite* CreateZombie(Vector2 position, float size, Color skinColor, Color clothesColor);
+
+/**
+ * @brief Creates a UFO sprite
+ * 
+ * @param position The center position of the UFO
+ * @param size The size of the UFO
+ * @param bodyColor The color of the UFO body
+ * @param glowColor The color of the UFO lights/glow effects
+ * @return A pointer to the created UFO sprite
+ */
+RayPalsSprite* CreateUFO(Vector2 position, float size, Color bodyColor, Color glowColor);
+
+/**
+ * @brief Creates a dragon sprite
+ * 
+ * @param position The center position of the dragon
+ * @param size The size of the dragon
+ * @param bodyColor The color of the dragon's body
+ * @param wingColor The color of the dragon's wings
+ * @return A pointer to the created dragon sprite
+ */
+RayPalsSprite* CreateDragon(Vector2 position, float size, Color bodyColor, Color wingColor);
+
+/**
+ * @brief Creates a wizard sprite
+ * 
+ * @param position The center position of the wizard
+ * @param size The size of the wizard
+ * @param robeColor The color of the wizard's robe
+ * @param hatColor The color of the wizard's hat
+ * @return A pointer to the created wizard sprite
+ */
+RayPalsSprite* CreateWizard(Vector2 position, float size, Color robeColor, Color hatColor);
+
+/**
+ * @brief Creates a treasure chest sprite
+ * 
+ * @param position The center position of the treasure chest
+ * @param size The size of the treasure chest
+ * @param chestColor The color of the chest
+ * @param goldColor The color of the treasure/gold
+ * @param isOpen Whether the chest is open or closed
+ * @return A pointer to the created treasure chest sprite
+ */
+RayPalsSprite* CreateTreasureChest(Vector2 position, float size, Color chestColor, Color goldColor, bool isOpen);
+
+/**
+ * @brief Creates a portal sprite
+ * 
+ * @param position The center position of the portal
+ * @param size The size of the portal
+ * @param outerColor The color of the portal's outer ring
+ * @param innerColor The color of the portal's inner swirl
+ * @return A pointer to the created portal sprite
+ */
+RayPalsSprite* CreatePortal(Vector2 position, float size, Color outerColor, Color innerColor);
+
+/**
+ * @brief Creates a snowman sprite
+ * 
+ * @param position The center position of the snowman
+ * @param size The size of the snowman
+ * @param snowColor The color of the snowman's body
+ * @param accessoryColor The color of the snowman's accessories
+ * @return A pointer to the created snowman sprite
+ */
+RayPalsSprite* CreateSnowman(Vector2 position, float size, Color snowColor, Color accessoryColor);
+
+/**
+ * @brief Creates a potion sprite
+ * 
+ * @param position The center position of the potion
+ * @param size The size of the potion
+ * @param bottleColor The color of the potion bottle
+ * @param liquidColor The color of the potion liquid
+ * @return A pointer to the created potion sprite
+ */
+RayPalsSprite* CreatePotion(Vector2 position, float size, Color bottleColor, Color liquidColor);
+
+/**
+ * @brief Creates a cannon sprite
+ * 
+ * @param position The center position of the cannon
+ * @param size The size of the cannon
+ * @param cannonColor The color of the cannon body
+ * @param wheelColor The color of the cannon wheels
+ * @return A pointer to the created cannon sprite
+ */
+RayPalsSprite* CreateCannon(Vector2 position, float size, Color cannonColor, Color wheelColor);
+
 #ifdef __cplusplus
 }
 #endif

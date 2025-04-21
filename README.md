@@ -4,7 +4,7 @@ A simple 2D/3D shape and sprite library built on top of [raylib](https://www.ray
 
 ![RayPals Demo](examples/game_scene.gif)
 ![Basic Shapes](examples/basic_shapes.png)
-![Sprite Gallery](examples/sprite_gallery.png)
+![Sprite Gallery](examples/sprite_gallery.gif)
 
 ## What Does This Do?
 
@@ -15,6 +15,17 @@ RayPals gives you ready-made shapes and sprites for your raylib games:
 - 🚗 Vehicles: cars, tanks, boats
 - ⭐ Special effects: stars, lightning bolts
 - Everything is already colored and animated!
+
+### Library Features
+- **41 pre-built sprites** ready to use in your games
+- **12 basic shapes** (8 2D shapes and 4 3D shapes)
+- **(More coming!)**
+- Characters: simple humans, robots, animals, soldiers, zombies, wizards, dragons
+- Fantasy objects: treasure chests, potions, swords, shields, gems, portals
+- Vehicles: cars, tanks, motorcycles, skateboards, sailboats, airplanes, UFOs
+- Environment: trees, clouds, houses, bushes, rocks, flowers, snowmen
+- Magic effects: stars, lightning bolts, explosions, portals
+- Simple interface for creating, positioning, and animating everything!
 
 ## Super Easy Setup (No CMake Knowledge Required!)
 
@@ -128,6 +139,18 @@ RayPalsSprite* tree = CreateSimpleTree((Vector2){100, 400}, 100, BROWN, DARKGREE
 
 // Car (position, size, body color, wheels color)
 RayPalsSprite* car = CreateCar((Vector2){300, 500}, 100, RED, BLACK);
+
+// Dragon (position, size, body color, wing color)
+RayPalsSprite* dragon = CreateDragon((Vector2){200, 200}, 80, RED, ORANGE);
+
+// Wizard (position, size, robe color, hat color)
+RayPalsSprite* wizard = CreateWizard((Vector2){400, 200}, 70, PURPLE, BLUE);
+
+// UFO (position, size, body color, glow color)
+RayPalsSprite* ufo = CreateUFO((Vector2){600, 150}, 60, GRAY, GREEN);
+
+// Portal (position, size, outer color, inner color)
+RayPalsSprite* portal = CreatePortal((Vector2){500, 400}, 80, PURPLE, SKYBLUE);
 ```
 
 ### Easy Animation

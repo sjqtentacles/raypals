@@ -48,6 +48,10 @@ int main(void)
         { CreateRobotCharacter((Vector2){0, 0}, 60, DARKGRAY, GREEN), "Robot", "Characters", true },
         { CreateAnimalCharacter((Vector2){0, 0}, 60, ORANGE, BLACK), "Animal", "Characters", true },
         { CreateGhost((Vector2){0, 0}, 60, PURPLE), "Ghost", "Characters", true },
+        { CreateSoldier((Vector2){0, 0}, 60, GREEN, BEIGE), "Soldier", "Characters", true },
+        { CreateZombie((Vector2){0, 0}, 60, BEIGE, DARKGREEN), "Zombie", "Characters", true },
+        { CreateWizard((Vector2){0, 0}, 60, PURPLE, BLUE), "Wizard", "Characters", true },
+        { CreateDragon((Vector2){0, 0}, 60, RED, ORANGE), "Dragon", "Characters", true },
         
         // Environment
         { CreateSimpleTree((Vector2){0, 0}, 80, BROWN, GREEN), "Tree", "Environment", false },
@@ -57,6 +61,7 @@ int main(void)
         { CreateRock((Vector2){0, 0}, 70, GRAY), "Rock", "Environment", false },
         { CreateFlower((Vector2){0, 0}, 60, PINK, YELLOW), "Flower", "Environment", false },
         { CreateFish((Vector2){0, 0}, 70, SKYBLUE, BLUE), "Fish", "Environment", false },
+        { CreateSnowman((Vector2){0, 0}, 70, WHITE, BLACK), "Snowman", "Environment", true },
         
         // Vehicles
         { CreateCar((Vector2){0, 0}, 70, RED, BLACK), "Car", "Vehicles", false },
@@ -64,6 +69,8 @@ int main(void)
         { CreateMotorcycle((Vector2){0, 0}, 70, BLUE, BLACK), "Motorcycle", "Vehicles", false },
         { CreateSkateboard((Vector2){0, 0}, 70, YELLOW, BLACK), "Skateboard", "Vehicles", false },
         { CreateSailboat((Vector2){0, 0}, 70, BROWN, WHITE), "Sailboat", "Vehicles", false },
+        { CreateAirplane((Vector2){0, 0}, 70, SKYBLUE, WHITE), "Airplane", "Vehicles", true },
+        { CreateUFO((Vector2){0, 0}, 70, GRAY, GREEN), "UFO", "Vehicles", true },
         
         // Items
         { CreateSword((Vector2){0, 0}, 70, LIGHTGRAY, BROWN), "Sword", "Items", false },
@@ -73,10 +80,15 @@ int main(void)
         { CreateCrown((Vector2){0, 0}, 70, GOLD, RED), "Crown", "Items", false },
         { CreateCoin((Vector2){0, 0}, 70, GOLD), "Coin", "Items", false },
         { CreateGem((Vector2){0, 0}, 70, PURPLE), "Gem", "Items", false },
+        { CreatePotion((Vector2){0, 0}, 70, SKYBLUE, PURPLE), "Potion", "Items", true },
+        { CreateTreasureChest((Vector2){0, 0}, 70, BROWN, GOLD, true), "Treasure Chest", "Items", true },
+        { CreateCannon((Vector2){0, 0}, 70, DARKGRAY, BLACK), "Cannon", "Items", true },
         
         // Magic
         { CreateYellowStar((Vector2){0, 0}, 70), "Star", "Magic", true },
         { CreateLightningBolt((Vector2){0, 0}, 70, YELLOW), "Lightning", "Magic", false },
+        { CreateExplosion((Vector2){0, 0}, 70, ORANGE, YELLOW), "Explosion", "Magic", true },
+        { CreatePortal((Vector2){0, 0}, 70, PURPLE, BLUE), "Portal", "Magic", true },
         
         // UI
         { CreateButton((Vector2){0, 0}, (Vector2){80, 40}, SKYBLUE, BLUE), "Button", "UI", false },
@@ -156,6 +168,51 @@ int main(void)
                         SetSpriteRotation(sprites[i].sprite, animTime * 30.0f);
                         float scale = 0.8f + 0.3f * sinf(animTime * 3.0f);
                         SetSpriteScale(sprites[i].sprite, scale);
+                    } else if (strcmp(sprites[i].name, "Soldier") == 0) { // Soldier (slight marching motion)
+                        Vector2 pos = { sinf(animTime * 2.0f) * 5.0f, 0 };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 4.0f) * 5.0f);
+                    } else if (strcmp(sprites[i].name, "Zombie") == 0) { // Zombie (shambling motion)
+                        Vector2 pos = { sinf(animTime * 1.0f) * 8.0f, sinf(animTime * 2.0f) * 3.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 0.5f) * 7.0f);
+                    } else if (strcmp(sprites[i].name, "Airplane") == 0) { // Airplane (banking motion)
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 1.5f) * 10.0f);
+                        Vector2 pos = { 0, sinf(animTime * 2.0f) * 8.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                    } else if (strcmp(sprites[i].name, "Explosion") == 0) { // Explosion (pulsing)
+                        float scale = 0.9f + 0.3f * sinf(animTime * 5.0f);
+                        SetSpriteScale(sprites[i].sprite, scale);
+                        SetSpriteRotation(sprites[i].sprite, animTime * 20.0f);
+                    } else if (strcmp(sprites[i].name, "UFO") == 0) { // UFO (hovering motion)
+                        Vector2 pos = { sinf(animTime * 1.5f) * 5.0f, sinf(animTime * 2.5f) * 8.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        float scale = 0.95f + 0.05f * sinf(animTime * 4.0f);
+                        SetSpriteScale(sprites[i].sprite, scale);
+                    } else if (strcmp(sprites[i].name, "Dragon") == 0) { // Dragon (wing flapping)
+                        float scale = 0.95f + 0.1f * sinf(animTime * 3.0f);
+                        SetSpriteScale(sprites[i].sprite, scale);
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 0.8f) * 5.0f);
+                    } else if (strcmp(sprites[i].name, "Wizard") == 0) { // Wizard (magical effect)
+                        Vector2 pos = { 0, sinf(animTime * 1.5f) * 5.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 1.0f) * 5.0f);
+                    } else if (strcmp(sprites[i].name, "Treasure Chest") == 0) { // Treasure chest (slight bouncing)
+                        Vector2 pos = { 0, sinf(animTime * 3.0f) * 3.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                    } else if (strcmp(sprites[i].name, "Portal") == 0) { // Portal (spinning)
+                        SetSpriteRotation(sprites[i].sprite, animTime * 30.0f);
+                        float scale = 0.9f + 0.15f * sinf(animTime * 2.0f);
+                        SetSpriteScale(sprites[i].sprite, scale);
+                    } else if (strcmp(sprites[i].name, "Snowman") == 0) { // Snowman (slight sway)
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 0.5f) * 3.0f);
+                    } else if (strcmp(sprites[i].name, "Potion") == 0) { // Potion (bubbling effect)
+                        Vector2 pos = { sinf(animTime * 2.0f) * 3.0f, sinf(animTime * 3.0f) * 2.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                    } else if (strcmp(sprites[i].name, "Cannon") == 0) { // Cannon (recoil effect)
+                        Vector2 pos = { -sinf(animTime * 3.0f) * fmaxf(0, sinf(animTime * 3.0f)) * 8.0f, 0 };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 3.0f) * 3.0f);
                     }
                 }
             }

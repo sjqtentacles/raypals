@@ -1639,3 +1639,820 @@ RayPalsSprite* CreateYellowStar(Vector2 position, float size) {
     
     return star;
 }
+
+RayPalsSprite* CreateExplosion(Vector2 position, float size, Color primaryColor, Color secondaryColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Create center of explosion
+    RayPals2DShape* center = CreateCircle((Vector2){ 0, 0 }, size * 0.4f, primaryColor);
+    
+    // Create outer explosion circles
+    RayPals2DShape* outerCircle1 = CreateCircle((Vector2){ size * 0.3f, size * 0.2f }, size * 0.25f, secondaryColor);
+    RayPals2DShape* outerCircle2 = CreateCircle((Vector2){ -size * 0.25f, size * 0.3f }, size * 0.2f, secondaryColor);
+    RayPals2DShape* outerCircle3 = CreateCircle((Vector2){ -size * 0.3f, -size * 0.2f }, size * 0.25f, secondaryColor);
+    RayPals2DShape* outerCircle4 = CreateCircle((Vector2){ size * 0.25f, -size * 0.3f }, size * 0.2f, secondaryColor);
+    
+    // Create some triangular "spikes" for a more dynamic look
+    RayPals2DShape* spike1 = CreateTriangle((Vector2){ size * 0.45f, 0 }, size * 0.4f, primaryColor);
+    spike1->rotation = 0.0f;
+    
+    RayPals2DShape* spike2 = CreateTriangle((Vector2){ 0, size * 0.45f }, size * 0.4f, primaryColor);
+    spike2->rotation = 90.0f;
+    
+    RayPals2DShape* spike3 = CreateTriangle((Vector2){ -size * 0.45f, 0 }, size * 0.4f, primaryColor);
+    spike3->rotation = 180.0f;
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, outerCircle1);
+    AddShapeToSprite(sprite, outerCircle2);
+    AddShapeToSprite(sprite, outerCircle3);
+    AddShapeToSprite(sprite, outerCircle4);
+    AddShapeToSprite(sprite, spike1);
+    AddShapeToSprite(sprite, spike2);
+    AddShapeToSprite(sprite, spike3);
+    AddShapeToSprite(sprite, center);  // Center on top for better visual
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateAirplane(Vector2 position, float size, Color bodyColor, Color detailColor) {
+    RayPalsSprite* sprite = CreateSprite(6);
+    if (sprite == NULL) return NULL;
+    
+    // Airplane fuselage (main body)
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, 0 }, (Vector2){ size * 1.2f, size * 0.25f }, bodyColor);
+    
+    // Airplane nose (front part)
+    RayPals2DShape* nose = CreateTriangle((Vector2){ size * 0.6f, 0 }, size * 0.4f, bodyColor);
+    nose->rotation = 90.0f;  // Point to the right
+    
+    // Airplane tail (back part)
+    RayPals2DShape* tail = CreateRectangle((Vector2){ -size * 0.5f, -size * 0.25f }, (Vector2){ size * 0.3f, size * 0.3f }, bodyColor);
+    
+    // Airplane wings
+    RayPals2DShape* wings = CreateRectangle((Vector2){ 0, 0 }, (Vector2){ size * 0.6f, size * 0.8f }, bodyColor);
+    
+    // Windows (detail)
+    RayPals2DShape* window1 = CreateCircle((Vector2){ size * 0.2f, 0 }, size * 0.05f, detailColor);
+    RayPals2DShape* window2 = CreateCircle((Vector2){ 0, 0 }, size * 0.05f, detailColor);
+    RayPals2DShape* window3 = CreateCircle((Vector2){ -size * 0.2f, 0 }, size * 0.05f, detailColor);
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, wings);
+    AddShapeToSprite(sprite, nose);
+    AddShapeToSprite(sprite, tail);
+    AddShapeToSprite(sprite, window1);
+    AddShapeToSprite(sprite, window2);
+    AddShapeToSprite(sprite, window3);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateSoldier(Vector2 position, float size, Color uniformColor, Color skinColor) {
+    RayPalsSprite* sprite = CreateSprite(7);
+    if (sprite == NULL) return NULL;
+    
+    // Body parts
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, size * 0.15f }, (Vector2){ size * 0.4f, size * 0.5f }, uniformColor);
+    
+    // Head with helmet
+    RayPals2DShape* head = CreateCircle((Vector2){ 0, -size * 0.25f }, size * 0.2f, skinColor);
+    RayPals2DShape* helmet = CreateRectangle((Vector2){ 0, -size * 0.35f }, (Vector2){ size * 0.4f, size * 0.15f }, uniformColor);
+    
+    // Arms
+    RayPals2DShape* leftArm = CreateRectangle((Vector2){ -size * 0.25f, size * 0.1f }, (Vector2){ size * 0.1f, size * 0.4f }, uniformColor);
+    leftArm->rotation = -15.0f;
+    
+    RayPals2DShape* rightArm = CreateRectangle((Vector2){ size * 0.25f, size * 0.1f }, (Vector2){ size * 0.1f, size * 0.4f }, uniformColor);
+    rightArm->rotation = 15.0f;
+    
+    // Legs
+    RayPals2DShape* leftLeg = CreateRectangle((Vector2){ -size * 0.15f, size * 0.5f }, (Vector2){ size * 0.15f, size * 0.4f }, uniformColor);
+    RayPals2DShape* rightLeg = CreateRectangle((Vector2){ size * 0.15f, size * 0.5f }, (Vector2){ size * 0.15f, size * 0.4f }, uniformColor);
+    
+    // Gun (optional)
+    RayPals2DShape* gun = CreateRectangle((Vector2){ size * 0.4f, size * 0.2f }, (Vector2){ size * 0.5f, size * 0.1f }, (Color){ 80, 80, 80, 255 });
+    
+    // Add shapes to sprite in correct order
+    AddShapeToSprite(sprite, leftLeg);
+    AddShapeToSprite(sprite, rightLeg);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, leftArm);
+    AddShapeToSprite(sprite, rightArm);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, helmet);
+    AddShapeToSprite(sprite, gun);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateZombie(Vector2 position, float size, Color skinColor, Color clothesColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Create zombie with hunched posture and tattered clothes
+    
+    // Body - slightly tilted
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, size * 0.1f }, (Vector2){ size * 0.4f, size * 0.5f }, clothesColor);
+    body->rotation = 10.0f;  // Slight tilt
+    
+    // Tattered clothes effect
+    RayPals2DShape* tatters = CreateTriangle((Vector2){ size * 0.1f, size * 0.3f }, size * 0.3f, clothesColor);
+    tatters->rotation = 180.0f;
+    
+    // Head - green/gray skin
+    Color zombieSkin = skinColor;
+    zombieSkin.g += 40;  // Add greenish tint
+    zombieSkin.r -= 30;  // Reduce red for a sickly look
+    
+    RayPals2DShape* head = CreateCircle((Vector2){ size * 0.05f, -size * 0.25f }, size * 0.2f, zombieSkin);
+    
+    // Eyes - creepy white
+    RayPals2DShape* leftEye = CreateCircle((Vector2){ -size * 0.05f, -size * 0.27f }, size * 0.05f, WHITE);
+    RayPals2DShape* rightEye = CreateCircle((Vector2){ size * 0.12f, -size * 0.27f }, size * 0.05f, WHITE);
+    
+    // Arms - asymmetrical and outstretched
+    RayPals2DShape* leftArm = CreateRectangle((Vector2){ -size * 0.3f, size * 0.0f }, (Vector2){ size * 0.2f, size * 0.1f }, zombieSkin);
+    leftArm->rotation = -30.0f;
+    
+    RayPals2DShape* rightArm = CreateRectangle((Vector2){ size * 0.2f, size * 0.1f }, (Vector2){ size * 0.3f, size * 0.1f }, zombieSkin);
+    rightArm->rotation = 20.0f;
+    
+    // Legs - one dragging
+    RayPals2DShape* leftLeg = CreateRectangle((Vector2){ -size * 0.15f, size * 0.45f }, (Vector2){ size * 0.15f, size * 0.4f }, clothesColor);
+    leftLeg->rotation = -5.0f;
+    
+    RayPals2DShape* rightLeg = CreateRectangle((Vector2){ size * 0.12f, size * 0.5f }, (Vector2){ size * 0.15f, size * 0.45f }, clothesColor);
+    rightLeg->rotation = 15.0f;  // Dragging leg
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, rightLeg);
+    AddShapeToSprite(sprite, leftLeg);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, tatters);
+    AddShapeToSprite(sprite, leftArm);
+    AddShapeToSprite(sprite, rightArm);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, leftEye);
+    AddShapeToSprite(sprite, rightEye);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateUFO(Vector2 position, float size, Color bodyColor, Color glowColor) {
+    RayPalsSprite* sprite = CreateSprite(5);
+    if (sprite == NULL) return NULL;
+    
+    // Main UFO saucer body - elliptical shape
+    RayPals2DShape* body = CreateCircle((Vector2){ 0, 0 }, size * 0.5f, bodyColor);
+    
+    // Top dome of the UFO
+    RayPals2DShape* dome = CreateCircle((Vector2){ 0, -size * 0.15f }, size * 0.25f, bodyColor);
+    
+    // Bottom rim of the UFO
+    RayPals2DShape* bottomRim = CreateRectangle(
+        (Vector2){ 0, size * 0.05f }, 
+        (Vector2){ size * 0.8f, size * 0.1f }, 
+        DARKGRAY
+    );
+    
+    // Glowing lights around the rim
+    Color lightColor = glowColor;
+    lightColor.a = 220; // Semi-transparent for glow effect
+    
+    RayPals2DShape* lights1 = CreateCircle((Vector2){ -size * 0.25f, size * 0.05f }, size * 0.08f, lightColor);
+    RayPals2DShape* lights2 = CreateCircle((Vector2){ 0, size * 0.05f }, size * 0.08f, lightColor);
+    RayPals2DShape* lights3 = CreateCircle((Vector2){ size * 0.25f, size * 0.05f }, size * 0.08f, lightColor);
+    
+    // Optional tractor beam effect
+    RayPals2DShape* beam = CreateTriangle(
+        (Vector2){ 0, size * 0.2f },
+        size * 0.5f,
+        (Color){ glowColor.r, glowColor.g, glowColor.b, 100 } // Very transparent
+    );
+    beam->rotation = 180.0f; // Point downward
+    
+    // Add shapes to sprite in appropriate order
+    AddShapeToSprite(sprite, beam);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, bottomRim);
+    AddShapeToSprite(sprite, lights1);
+    AddShapeToSprite(sprite, lights2);
+    AddShapeToSprite(sprite, lights3);
+    AddShapeToSprite(sprite, dome);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateDragon(Vector2 position, float size, Color bodyColor, Color wingColor) {
+    RayPalsSprite* sprite = CreateSprite(9);
+    if (sprite == NULL) return NULL;
+    
+    // Dragon body (main elongated shape)
+    RayPals2DShape* body = CreateRectangle(
+        (Vector2){ 0, 0 }, 
+        (Vector2){ size * 1.2f, size * 0.4f }, 
+        bodyColor
+    );
+    
+    // Dragon head (triangle for snout effect)
+    RayPals2DShape* head = CreateTriangle(
+        (Vector2){ size * 0.7f, -size * 0.1f }, 
+        size * 0.4f, 
+        bodyColor
+    );
+    head->rotation = 90.0f; // Point to the right
+    
+    // Dragon neck
+    RayPals2DShape* neck = CreateRectangle(
+        (Vector2){ size * 0.4f, -size * 0.1f }, 
+        (Vector2){ size * 0.3f, size * 0.2f }, 
+        bodyColor
+    );
+    
+    // Dragon tail (curved)
+    RayPals2DShape* tail1 = CreateRectangle(
+        (Vector2){ -size * 0.5f, size * 0.0f }, 
+        (Vector2){ size * 0.4f, size * 0.15f }, 
+        bodyColor
+    );
+    tail1->rotation = -15.0f;
+    
+    RayPals2DShape* tail2 = CreateTriangle(
+        (Vector2){ -size * 0.8f, size * 0.1f }, 
+        size * 0.3f, 
+        bodyColor
+    );
+    tail2->rotation = -90.0f; // Point to the left
+    
+    // Dragon wings
+    RayPals2DShape* leftWing = CreateTriangle(
+        (Vector2){ size * 0.1f, -size * 0.3f }, 
+        size * 0.6f, 
+        wingColor
+    );
+    leftWing->rotation = 30.0f;
+    
+    RayPals2DShape* rightWing = CreateTriangle(
+        (Vector2){ -size * 0.1f, -size * 0.3f }, 
+        size * 0.6f, 
+        wingColor
+    );
+    rightWing->rotation = 150.0f;
+    
+    // Dragon eyes
+    Color eyeColor = RED;
+    RayPals2DShape* leftEye = CreateCircle(
+        (Vector2){ size * 0.6f, -size * 0.15f }, 
+        size * 0.05f, 
+        eyeColor
+    );
+    
+    // Dragon horns
+    RayPals2DShape* horn1 = CreateTriangle(
+        (Vector2){ size * 0.65f, -size * 0.25f }, 
+        size * 0.2f, 
+        bodyColor
+    );
+    horn1->rotation = 45.0f;
+    
+    RayPals2DShape* horn2 = CreateTriangle(
+        (Vector2){ size * 0.55f, -size * 0.25f }, 
+        size * 0.2f, 
+        bodyColor
+    );
+    horn2->rotation = 15.0f;
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, leftWing);
+    AddShapeToSprite(sprite, rightWing);
+    AddShapeToSprite(sprite, tail2);
+    AddShapeToSprite(sprite, tail1);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, neck);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, horn1);
+    AddShapeToSprite(sprite, horn2);
+    AddShapeToSprite(sprite, leftEye);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateWizard(Vector2 position, float size, Color robeColor, Color hatColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Colors
+    Color faceColor = BEIGE;
+    Color staffColor = BROWN;
+    Color starColor = YELLOW;
+    
+    // Wizard robe (base)
+    RayPals2DShape* robe = CreateTriangle(
+        (Vector2){ 0, size * 0.3f }, 
+        size * 0.9f, 
+        robeColor
+    );
+    robe->rotation = 180.0f; // Point downward
+    
+    // Wizard body (upper part)
+    RayPals2DShape* body = CreateRectangle(
+        (Vector2){ 0, -size * 0.1f }, 
+        (Vector2){ size * 0.4f, size * 0.5f }, 
+        robeColor
+    );
+    
+    // Wizard head
+    RayPals2DShape* head = CreateCircle(
+        (Vector2){ 0, -size * 0.4f }, 
+        size * 0.15f, 
+        faceColor
+    );
+    
+    // Wizard hat (cone)
+    RayPals2DShape* hat = CreateTriangle(
+        (Vector2){ 0, -size * 0.65f }, 
+        size * 0.5f, 
+        hatColor
+    );
+    hat->rotation = 0.0f; // Point upward
+    
+    // Wizard hat brim
+    RayPals2DShape* hatBrim = CreateRectangle(
+        (Vector2){ 0, -size * 0.5f }, 
+        (Vector2){ size * 0.45f, size * 0.05f }, 
+        hatColor
+    );
+    
+    // Wizard beard
+    RayPals2DShape* beard = CreateTriangle(
+        (Vector2){ 0, -size * 0.3f }, 
+        size * 0.25f, 
+        WHITE
+    );
+    beard->rotation = 180.0f; // Point downward
+    
+    // Wizard staff
+    RayPals2DShape* staff = CreateRectangle(
+        (Vector2){ size * 0.3f, size * 0.1f }, 
+        (Vector2){ size * 0.05f, size * 0.8f }, 
+        staffColor
+    );
+    staff->rotation = -15.0f;
+    
+    // Wizard staff star
+    RayPals2DShape* staffStar = CreateStar(
+        (Vector2){ size * 0.35f, -size * 0.25f }, 
+        size * 0.15f, 
+        5, 
+        starColor
+    );
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, staff);
+    AddShapeToSprite(sprite, robe);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, beard);
+    AddShapeToSprite(sprite, hatBrim);
+    AddShapeToSprite(sprite, hat);
+    AddShapeToSprite(sprite, staffStar);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateTreasureChest(Vector2 position, float size, Color chestColor, Color goldColor, bool isOpen) {
+    RayPalsSprite* sprite = CreateSprite(7);
+    if (sprite == NULL) return NULL;
+    
+    // Colors
+    Color lockColor = DARKBROWN;
+    
+    // Chest base (main rectangle)
+    RayPals2DShape* base = CreateRectangle(
+        (Vector2){ 0, size * 0.1f }, 
+        (Vector2){ size * 0.8f, size * 0.5f }, 
+        chestColor
+    );
+    
+    // Chest lid
+    RayPals2DShape* lid = CreateRectangle(
+        isOpen ? (Vector2){ -size * 0.3f, -size * 0.25f } : (Vector2){ 0, -size * 0.15f }, 
+        (Vector2){ size * 0.8f, size * 0.3f }, 
+        chestColor
+    );
+    // Rotate the lid if open
+    lid->rotation = isOpen ? -60.0f : 0.0f;
+    
+    // Chest lock/clasp
+    RayPals2DShape* lock = CreateRectangle(
+        isOpen ? (Vector2){ -size * 0.3f, -size * 0.1f } : (Vector2){ 0, 0 }, 
+        (Vector2){ size * 0.15f, size * 0.15f }, 
+        lockColor
+    );
+    // Rotate the lock with the lid if open
+    lock->rotation = isOpen ? -60.0f : 0.0f;
+    
+    // Decorative elements (edges/corners)
+    RayPals2DShape* corner1 = CreateRectangle(
+        (Vector2){ size * 0.35f, size * 0.15f }, 
+        (Vector2){ size * 0.1f, size * 0.4f }, 
+        lockColor
+    );
+    
+    RayPals2DShape* corner2 = CreateRectangle(
+        (Vector2){ -size * 0.35f, size * 0.15f }, 
+        (Vector2){ size * 0.1f, size * 0.4f }, 
+        lockColor
+    );
+    
+    // Only create and add gold if chest is open
+    RayPals2DShape* gold1 = NULL;
+    RayPals2DShape* gold2 = NULL;
+    
+    if (isOpen) {
+        // Gold coins/treasure (circles) that are visible when open
+        gold1 = CreateCircle(
+            (Vector2){ -size * 0.1f, size * 0.0f }, 
+            size * 0.15f, 
+            goldColor
+        );
+        
+        gold2 = CreateCircle(
+            (Vector2){ size * 0.15f, size * 0.05f }, 
+            size * 0.12f, 
+            goldColor
+        );
+    }
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, base);
+    AddShapeToSprite(sprite, corner1);
+    AddShapeToSprite(sprite, corner2);
+    
+    // Add gold pieces if chest is open
+    if (isOpen) {
+        AddShapeToSprite(sprite, gold1);
+        AddShapeToSprite(sprite, gold2);
+    }
+    
+    // Add lid and lock last so they appear on top
+    AddShapeToSprite(sprite, lid);
+    AddShapeToSprite(sprite, lock);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreatePortal(Vector2 position, float size, Color outerColor, Color innerColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Create a swirling portal with multiple rings
+    
+    // Outer ring
+    RayPals2DShape* outerRing = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.5f, 
+        outerColor
+    );
+    outerRing->filled = false;
+    outerRing->thickness = 4.0f;
+    
+    // Create several inner rings with decreasing size and alternating colors
+    RayPals2DShape* ring1 = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.45f, 
+        innerColor
+    );
+    ring1->filled = false;
+    ring1->thickness = 3.0f;
+    
+    RayPals2DShape* ring2 = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.4f, 
+        outerColor
+    );
+    ring2->filled = false;
+    ring2->thickness = 3.0f;
+    
+    RayPals2DShape* ring3 = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.35f, 
+        innerColor
+    );
+    ring3->filled = false;
+    ring3->thickness = 3.0f;
+    
+    RayPals2DShape* ring4 = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.3f, 
+        outerColor
+    );
+    ring4->filled = false;
+    ring4->thickness = 3.0f;
+    
+    // Inner swirl (spiral effect using shapes)
+    RayPals2DShape* swirl1 = CreateCircle(
+        (Vector2){ size * 0.05f, size * 0.05f }, 
+        size * 0.25f, 
+        innerColor
+    );
+    swirl1->filled = true;
+    
+    RayPals2DShape* swirl2 = CreateCircle(
+        (Vector2){ -size * 0.08f, -size * 0.08f }, 
+        size * 0.15f, 
+        outerColor
+    );
+    swirl2->filled = true;
+    
+    // Core of the portal 
+    RayPals2DShape* core = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.1f, 
+        (Color){ 255, 255, 255, 200 }  // Bright center with some transparency
+    );
+    
+    // Add shapes to sprite in proper order (from back to front)
+    AddShapeToSprite(sprite, outerRing);
+    AddShapeToSprite(sprite, ring1);
+    AddShapeToSprite(sprite, ring2);
+    AddShapeToSprite(sprite, ring3);
+    AddShapeToSprite(sprite, ring4);
+    AddShapeToSprite(sprite, swirl1);
+    AddShapeToSprite(sprite, swirl2);
+    AddShapeToSprite(sprite, core);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateSnowman(Vector2 position, float size, Color snowColor, Color accessoryColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Bottom snowball (largest)
+    RayPals2DShape* bottom = CreateCircle(
+        (Vector2){ 0, size * 0.4f }, 
+        size * 0.4f, 
+        snowColor
+    );
+    
+    // Middle snowball
+    RayPals2DShape* middle = CreateCircle(
+        (Vector2){ 0, 0 }, 
+        size * 0.3f, 
+        snowColor
+    );
+    
+    // Head (top snowball - smallest)
+    RayPals2DShape* head = CreateCircle(
+        (Vector2){ 0, -size * 0.35f }, 
+        size * 0.2f, 
+        snowColor
+    );
+    
+    // Eyes
+    Color eyeColor = BLACK;
+    RayPals2DShape* leftEye = CreateCircle(
+        (Vector2){ -size * 0.08f, -size * 0.38f }, 
+        size * 0.03f, 
+        eyeColor
+    );
+    
+    RayPals2DShape* rightEye = CreateCircle(
+        (Vector2){ size * 0.08f, -size * 0.38f }, 
+        size * 0.03f, 
+        eyeColor
+    );
+    
+    // Carrot nose
+    Color carrotColor = ORANGE;
+    RayPals2DShape* nose = CreateTriangle(
+        (Vector2){ size * 0.1f, -size * 0.35f }, 
+        size * 0.15f, 
+        carrotColor
+    );
+    nose->rotation = 90.0f; // Point to the right
+    
+    // Hat (top hat)
+    RayPals2DShape* hatBrim = CreateRectangle(
+        (Vector2){ 0, -size * 0.55f }, 
+        (Vector2){ size * 0.5f, size * 0.05f }, 
+        accessoryColor
+    );
+    
+    RayPals2DShape* hatTop = CreateRectangle(
+        (Vector2){ 0, -size * 0.65f }, 
+        (Vector2){ size * 0.3f, size * 0.2f }, 
+        accessoryColor
+    );
+    
+    // Arms (sticks)
+    RayPals2DShape* leftArm = CreateRectangle(
+        (Vector2){ -size * 0.4f, -size * 0.05f }, 
+        (Vector2){ size * 0.4f, size * 0.03f }, 
+        BROWN
+    );
+    leftArm->rotation = 20.0f;
+    
+    RayPals2DShape* rightArm = CreateRectangle(
+        (Vector2){ size * 0.4f, -size * 0.05f }, 
+        (Vector2){ size * 0.4f, size * 0.03f }, 
+        BROWN
+    );
+    rightArm->rotation = -20.0f;
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, bottom);
+    AddShapeToSprite(sprite, leftArm);
+    AddShapeToSprite(sprite, rightArm);
+    AddShapeToSprite(sprite, middle);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, leftEye);
+    AddShapeToSprite(sprite, rightEye);
+    AddShapeToSprite(sprite, nose);
+    AddShapeToSprite(sprite, hatBrim);
+    AddShapeToSprite(sprite, hatTop);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreatePotion(Vector2 position, float size, Color bottleColor, Color liquidColor) {
+    RayPalsSprite* sprite = CreateSprite(6);
+    if (sprite == NULL) return NULL;
+    
+    // Potion bottle neck
+    RayPals2DShape* bottleNeck = CreateRectangle(
+        (Vector2){ 0, -size * 0.4f }, 
+        (Vector2){ size * 0.15f, size * 0.2f }, 
+        bottleColor
+    );
+    
+    // Potion bottle cap/cork
+    RayPals2DShape* bottleCap = CreateRectangle(
+        (Vector2){ 0, -size * 0.55f }, 
+        (Vector2){ size * 0.2f, size * 0.1f }, 
+        BROWN
+    );
+    
+    // Potion bottle body (wider at the bottom)
+    RayPals2DShape* bottleTop = CreateRectangle(
+        (Vector2){ 0, -size * 0.25f }, 
+        (Vector2){ size * 0.3f, size * 0.1f }, 
+        bottleColor
+    );
+    
+    RayPals2DShape* bottleBody = CreateRectangle(
+        (Vector2){ 0, size * 0.05f }, 
+        (Vector2){ size * 0.5f, size * 0.5f }, 
+        bottleColor
+    );
+    
+    // Round bottom of the bottle
+    RayPals2DShape* bottleBottom = CreateCircle(
+        (Vector2){ 0, size * 0.3f }, 
+        size * 0.25f, 
+        bottleColor
+    );
+    
+    // Liquid inside the bottle
+    RayPals2DShape* liquid = CreateRectangle(
+        (Vector2){ 0, size * 0.1f }, 
+        (Vector2){ size * 0.45f, size * 0.4f }, 
+        liquidColor
+    );
+    
+    // Bubble effects in the liquid
+    RayPals2DShape* bubble1 = CreateCircle(
+        (Vector2){ -size * 0.1f, 0 }, 
+        size * 0.05f, 
+        (Color){ 255, 255, 255, 150 } // Semi-transparent white
+    );
+    
+    RayPals2DShape* bubble2 = CreateCircle(
+        (Vector2){ size * 0.15f, size * 0.15f }, 
+        size * 0.03f, 
+        (Color){ 255, 255, 255, 150 } // Semi-transparent white
+    );
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, bottleBottom);
+    AddShapeToSprite(sprite, bottleBody);
+    AddShapeToSprite(sprite, liquid);
+    AddShapeToSprite(sprite, bubble1);
+    AddShapeToSprite(sprite, bubble2);
+    AddShapeToSprite(sprite, bottleTop);
+    AddShapeToSprite(sprite, bottleNeck);
+    AddShapeToSprite(sprite, bottleCap);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateCannon(Vector2 position, float size, Color cannonColor, Color wheelColor) {
+    RayPalsSprite* sprite = CreateSprite(7);
+    if (sprite == NULL) return NULL;
+    
+    // Cannon barrel (main part)
+    RayPals2DShape* barrel = CreateRectangle(
+        (Vector2){ size * 0.2f, -size * 0.1f }, 
+        (Vector2){ size * 0.8f, size * 0.25f }, 
+        cannonColor
+    );
+    
+    // Cannon end (muzzle)
+    RayPals2DShape* muzzle = CreateRectangle(
+        (Vector2){ size * 0.6f, -size * 0.1f }, 
+        (Vector2){ size * 0.1f, size * 0.3f }, 
+        cannonColor
+    );
+    
+    // Cannon base (carriage)
+    RayPals2DShape* base = CreateRectangle(
+        (Vector2){ 0, size * 0.1f }, 
+        (Vector2){ size * 0.6f, size * 0.3f }, 
+        cannonColor
+    );
+    
+    // Cannon wheels
+    RayPals2DShape* leftWheel = CreateCircle(
+        (Vector2){ -size * 0.2f, size * 0.3f }, 
+        size * 0.2f, 
+        wheelColor
+    );
+    
+    RayPals2DShape* rightWheel = CreateCircle(
+        (Vector2){ size * 0.2f, size * 0.3f }, 
+        size * 0.2f, 
+        wheelColor
+    );
+    
+    // Wheel hubs (decorative circles in the center of wheels)
+    RayPals2DShape* leftHub = CreateCircle(
+        (Vector2){ -size * 0.2f, size * 0.3f }, 
+        size * 0.05f, 
+        cannonColor
+    );
+    
+    RayPals2DShape* rightHub = CreateCircle(
+        (Vector2){ size * 0.2f, size * 0.3f }, 
+        size * 0.05f, 
+        cannonColor
+    );
+    
+    // Optional - cannon ball inside the barrel
+    RayPals2DShape* cannonBall = CreateCircle(
+        (Vector2){ size * 0.4f, -size * 0.1f }, 
+        size * 0.1f, 
+        BLACK
+    );
+    
+    // Add shapes to sprite in proper order
+    AddShapeToSprite(sprite, leftWheel);
+    AddShapeToSprite(sprite, rightWheel);
+    AddShapeToSprite(sprite, base);
+    AddShapeToSprite(sprite, barrel);
+    AddShapeToSprite(sprite, muzzle);
+    AddShapeToSprite(sprite, cannonBall);
+    AddShapeToSprite(sprite, leftHub);
+    AddShapeToSprite(sprite, rightHub);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
