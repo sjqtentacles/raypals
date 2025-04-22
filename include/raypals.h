@@ -50,7 +50,8 @@ typedef enum {
     RAYPALS_TREE,       ///< A simple tree shape
     RAYPALS_SKELETON,   ///< A skeleton shape
     RAYPALS_POLYGON,    ///< A regular polygon with configurable sides
-    RAYPALS_ARROW       ///< An arrow shape with configurable direction
+    RAYPALS_ARROW,      ///< An arrow shape with configurable direction
+    RAYPALS_WATER_DROP  ///< A water drop shape
 } RayPalsShapeType;
 
 /**
@@ -362,6 +363,17 @@ RayPalsSprite* CreateCloud(Vector2 position, float size, Color color);
  * @return A pointer to the created house sprite
  */
 RayPalsSprite* CreateHouse(Vector2 position, float size, Color wallColor, Color roofColor);
+
+/**
+ * @brief Creates a castle sprite
+ * 
+ * @param position The position of the castle
+ * @param size The size of the castle
+ * @param wallColor The color of the castle walls
+ * @param roofColor The color of the castle roofs
+ * @return A pointer to the created castle sprite
+ */
+RayPalsSprite* CreateCastle(Vector2 position, float size, Color wallColor, Color roofColor);
 
 /**
  * @brief Creates a bush sprite
@@ -982,6 +994,48 @@ RayPals3DTree Create3DTree(Vector3 position, float scale, Color trunkColor, Colo
  * @param tree Pointer to the tree structure to free
  */
 void Free3DTree(RayPals3DTree* tree);
+
+/**
+ * @brief Creates a skeleton shape
+ * 
+ * @param position The center position of the skeleton
+ * @param size The size of the skeleton
+ * @param color The color of the skeleton
+ * @return A pointer to the created skeleton shape
+ */
+RayPals2DShape* CreateSkeleton(Vector2 position, float size, Color color);
+
+/**
+ * @brief Creates a skeleton sprite
+ * 
+ * @param position The center position of the skeleton
+ * @param size The size of the skeleton
+ * @param boneColor The color of the skeleton's bones
+ * @return A pointer to the created skeleton sprite
+ */
+RayPalsSprite* CreateSkeletonSprite(Vector2 position, float size, Color boneColor);
+
+/**
+ * @brief Creates a water drop shape
+ * 
+ * @param position The center position of the water drop
+ * @param size The size of the water drop
+ * @param rotation The rotation of the water drop in degrees
+ * @param color The color of the water drop
+ * @return A pointer to the created water drop shape
+ */
+RayPals2DShape* CreateWaterDrop(Vector2 position, float size, float rotation, Color color);
+
+/**
+ * @brief Creates a waterfall sprite composed of multiple water drops
+ * 
+ * @param position The center position of the waterfall
+ * @param width The width of the waterfall
+ * @param height The height of the waterfall
+ * @param color The color of the waterfall (water drops)
+ * @return A pointer to the created waterfall sprite
+ */
+RayPalsSprite* CreateWaterfallSprite(Vector2 position, float width, float height, Color color);
 
 #ifdef __cplusplus
 }

@@ -17,6 +17,7 @@ RayPals is a simple 2D/3D shape and sprite library built on top of raylib. It pr
   - Star
   - Polygon
   - Arrow
+  - Water Drop
 
 - **Basic 3D Shapes**
   - Cube
@@ -41,7 +42,7 @@ RayPals is a simple 2D/3D shape and sprite library built on top of raylib. It pr
   - Environment Objects (Tree, Cloud, House, Bush, Rock, etc.)
   - Vehicles (Car, Tank, Motorcycle, Airplane, UFO, etc.)
   - Items (Sword, Shield, Potion, Treasure Chest, etc.)
-  - Magic Effects (Star, Lightning, Portal, Explosion)
+  - Magic Effects (Star, Lightning, Portal, Explosion, Waterfall)
   - UI Elements (Button, Health Bar)
 
 - **Animation Support**
@@ -84,6 +85,46 @@ Draw2DShape(square);
 
 // Don't forget to free when done
 FreeShape(square);
+```
+
+### Creating a Water Drop Shape
+
+```c
+#include "raypals.h"
+
+// Create a blue water drop
+RayPals2DShape* waterDrop = CreateWaterDrop(
+    (Vector2){ 200, 200 },  // position
+    40,                     // size
+    0.0f,                   // rotation
+    SKYBLUE                 // color
+);
+
+// Draw the shape
+Draw2DShape(waterDrop);
+
+// Don't forget to free when done
+FreeShape(waterDrop);
+```
+
+### Creating a Waterfall Sprite
+
+```c
+#include "raypals.h"
+
+// Create a waterfall composed of multiple water drops
+RayPalsSprite* waterfall = CreateWaterfallSprite(
+    (Vector2){ 400, 300 },  // position
+    200,                    // width
+    300,                    // height
+    SKYBLUE                 // color
+);
+
+// Draw the waterfall
+DrawSprite(waterfall);
+
+// Don't forget to free when done
+FreeSprite(waterfall);
 ```
 
 ### Creating a Sprite
@@ -152,59 +193,13 @@ Free3DSprite(robot);
 Free3DSprite(spaceship);
 ```
 
-This approach integrates all 3D models with the standard sprite system. The `Draw3DSprite` function handles all 3D transformations and drawing, providing a unified interface for all 3D objects.
-
-## Examples
-
-The repository includes several example programs demonstrating different features:
-
-- `basic_shapes.c`: Demonstrates basic 2D shape creation and manipulation
-- `shape_animation.c`: Shows how to animate shapes
-- `sprite_example.c`: Basic sprite usage
-- `sprite_gallery.c`: Showcases all available sprites and 3D models
-- `3d_sprites_example.c`: Demonstrates 3D forest scene creation and rendering
-- `3d_robot_example.c`: Shows how to create, manipulate, and animate 3D robots
 - `game_scene.c`: Shows how to create a simple game scene
+- `waterfall_example.c`: Shows how to create and animate a waterfall using water drop shapes
 
 Run the examples from the build directory:
 ```bash
 ./examples/sprite_gallery
 ./examples/3d_sprites_example
 ./examples/3d_robot_example
+./examples/waterfall_example
 ```
-
-## Tests
-
-The project includes a test suite to verify the functionality of key components:
-
-- 2D shape creation and manipulation
-- Sprite creation and composition
-- Animation support
-- 3D robot creation and manipulation
-
-Run the tests with:
-```bash
-mkdir build && cd build
-cmake .. -DBUILD_TESTS=ON
-cmake --build .
-ctest
-```
-
-## Documentation
-
-For detailed API documentation, see the header file `include/raypals.h`. Each function and structure is documented with clear descriptions and usage information.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-See the CONTRIBUTING.md file for more details on how to contribute to the project.
-
-## Acknowledgments
-
-- Built on top of [raylib](https://www.raylib.com/)
-- Inspired by the need for simple, reusable game development components

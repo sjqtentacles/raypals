@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 #include "rlgl.h"
 
 // ----------------------------------------------------------------------------
@@ -65,6 +66,26 @@ static void DrawArrowLines(float x, float y, float size, float rotation, Color c
     Vector2 v3 = { x + size/4, y + size/4 };
     
     DrawTriangleLines(v1, v2, v3, color);
+}
+
+static void DrawWaterDrop(float radius, Color color, bool filled) {
+    // Draw circular part (top of drop)
+    if (filled) {
+        DrawCircle(0, -radius*0.3f, radius*0.7f, color);
+    } else {
+        DrawCircleLines(0, -radius*0.3f, radius*0.7f, color);
+    }
+    
+    // Draw triangular part (bottom of drop)
+    Vector2 v1 = { 0, radius*0.9f };
+    Vector2 v2 = { -radius*0.7f, -radius*0.1f };
+    Vector2 v3 = { radius*0.7f, -radius*0.1f };
+    
+    if (filled) {
+        DrawTriangle(v1, v2, v3, color);
+    } else {
+        DrawTriangleLines(v1, v2, v3, color);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -201,6 +222,25 @@ RayPals2DShape* CreateArrow(Vector2 position, float size, float direction, Color
     shape->filled = true;
     shape->thickness = 2.0f;
     shape->segments = 0;
+    shape->points = 0;
+    shape->visible = true;
+    
+    return shape;
+}
+
+RayPals2DShape* CreateWaterDrop(Vector2 position, float size, float rotation, Color color) {
+    RayPals2DShape* shape = (RayPals2DShape*)malloc(sizeof(RayPals2DShape));
+    if (shape == NULL) return NULL;
+    
+    // Setup basic properties
+    shape->type = RAYPALS_WATER_DROP; // Use water drop type for proper rendering
+    shape->position = position;
+    shape->size = (Vector2){ size, size * 1.5f }; // Water drop is taller than wide
+    shape->rotation = rotation;
+    shape->color = color;
+    shape->filled = true;
+    shape->thickness = 2.0f;
+    shape->segments = 16; // Use enough segments for smooth drop shape
     shape->points = 0;
     shape->visible = true;
     
@@ -387,6 +427,40 @@ void Draw2DShape(RayPals2DShape* shape) {
                 DrawArrow(0, 0, size, shape->rotation, shape->color);
             } else {
                 DrawArrowLines(0, 0, size, shape->rotation, shape->color);
+            }
+        } break;
+        
+        case RAYPALS_WATER_DROP: {
+            float radius = shape->size.x/2;
+            DrawWaterDrop(radius, shape->color, shape->filled);
+        } break;
+        
+        case RAYPALS_SKELETON: {
+            // We'll draw a simple skeleton outline
+            // The actual drawing is a simplified stick figure
+            float width = shape->size.x;
+            float height = shape->size.y;
+            
+            // Just draw a skeleton icon (simplified X shape with a circle on top)
+            if (shape->filled) {
+                DrawCircle(0, -height*0.35f, width*0.15f, shape->color); // Skull
+                DrawLine(0, -height*0.2f, 0, height*0.2f, shape->color); // Spine
+                DrawLine(-width*0.25f, -height*0.1f, width*0.25f, -height*0.1f, shape->color); // Shoulders
+                DrawLine(-width*0.25f, height*0.2f, width*0.25f, height*0.2f, shape->color); // Hips
+                DrawLine(-width*0.25f, -height*0.1f, -width*0.4f, 0, shape->color); // Left arm
+                DrawLine(width*0.25f, -height*0.1f, width*0.4f, 0, shape->color); // Right arm
+                DrawLine(0, height*0.2f, -width*0.3f, height*0.4f, shape->color); // Left leg
+                DrawLine(0, height*0.2f, width*0.3f, height*0.4f, shape->color); // Right leg
+            } else {
+                float thickness = shape->thickness;
+                DrawCircleLines(0, -height*0.35f, width*0.15f, shape->color); // Skull
+                DrawLineEx((Vector2){0, -height*0.2f}, (Vector2){0, height*0.2f}, thickness, shape->color); // Spine
+                DrawLineEx((Vector2){-width*0.25f, -height*0.1f}, (Vector2){width*0.25f, -height*0.1f}, thickness, shape->color); // Shoulders
+                DrawLineEx((Vector2){-width*0.25f, height*0.2f}, (Vector2){width*0.25f, height*0.2f}, thickness, shape->color); // Hips
+                DrawLineEx((Vector2){-width*0.25f, -height*0.1f}, (Vector2){-width*0.4f, 0}, thickness, shape->color); // Left arm
+                DrawLineEx((Vector2){width*0.25f, -height*0.1f}, (Vector2){width*0.4f, 0}, thickness, shape->color); // Right arm
+                DrawLineEx((Vector2){0, height*0.2f}, (Vector2){-width*0.3f, height*0.4f}, thickness, shape->color); // Left leg
+                DrawLineEx((Vector2){0, height*0.2f}, (Vector2){width*0.3f, height*0.4f}, thickness, shape->color); // Right leg
             }
         } break;
         
@@ -762,6 +836,50 @@ RayPalsSprite* CreateHouse(Vector2 position, float size, Color wallColor, Color 
     AddShapeToSprite(sprite, base);
     AddShapeToSprite(sprite, roof);
     AddShapeToSprite(sprite, door);
+    AddShapeToSprite(sprite, window1);
+    AddShapeToSprite(sprite, window2);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateCastle(Vector2 position, float size, Color wallColor, Color roofColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Main castle body (rectangle)
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, size/4 }, (Vector2){ size, size*0.8f }, wallColor);
+    
+    // Main tower (rectangle)
+    RayPals2DShape* mainTower = CreateRectangle((Vector2){ 0, -size/3 }, (Vector2){ size*0.4f, size*0.6f }, wallColor);
+    
+    // Side towers (rectangles)
+    RayPals2DShape* leftTower = CreateRectangle((Vector2){ -size*0.4f, -size/3 }, (Vector2){ size*0.3f, size*0.5f }, wallColor);
+    RayPals2DShape* rightTower = CreateRectangle((Vector2){ size*0.4f, -size/3 }, (Vector2){ size*0.3f, size*0.5f }, wallColor);
+    
+    // Roofs (triangles)
+    RayPals2DShape* mainRoof = CreateTriangle((Vector2){ 0, -size*0.6f }, size*0.5f, roofColor);
+    RayPals2DShape* leftRoof = CreateTriangle((Vector2){ -size*0.4f, -size*0.55f }, size*0.4f, roofColor);
+    RayPals2DShape* rightRoof = CreateTriangle((Vector2){ size*0.4f, -size*0.55f }, size*0.4f, roofColor);
+    
+    // Castle gate (rectangle)
+    RayPals2DShape* gate = CreateRectangle((Vector2){ 0, size/3 }, (Vector2){ size*0.3f, size*0.4f }, BROWN);
+    
+    // Windows (circles)
+    RayPals2DShape* window1 = CreateCircle((Vector2){ -size*0.2f, 0 }, size*0.1f, SKYBLUE);
+    RayPals2DShape* window2 = CreateCircle((Vector2){ size*0.2f, 0 }, size*0.1f, SKYBLUE);
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, mainTower);
+    AddShapeToSprite(sprite, leftTower);
+    AddShapeToSprite(sprite, rightTower);
+    AddShapeToSprite(sprite, mainRoof);
+    AddShapeToSprite(sprite, leftRoof);
+    AddShapeToSprite(sprite, rightRoof);
+    AddShapeToSprite(sprite, gate);
     AddShapeToSprite(sprite, window1);
     AddShapeToSprite(sprite, window2);
     
@@ -1261,10 +1379,6 @@ RayPalsSprite* CreateStarSprite(Vector2 position, float size, Color color) {
     sprite->position = position;
     sprite->visible = true;
     
-    // Print debug info
-    printf("Created star sprite with size %.2f, color (%d,%d,%d,%d)\n", 
-           size, color.r, color.g, color.b, color.a);
-    
     return sprite;
 }
 
@@ -1559,10 +1673,28 @@ RayPalsSprite* CreateGem(Vector2 position, float size, Color color) {
 
 // UpdateShapeAnimation and Update3DShapeAnimation functions are already defined above
 
-// Create a water drop shape - empty implementation
-RayPals2DShape* CreateWaterDrop(Vector2 position, float size, float rotation, Color color) {
-    // This function is intentionally left empty
-    return NULL;
+// The CreateWaterDrop function is already defined earlier in the file (line ~230)
+// No duplicate implementation needed here
+
+RayPalsSprite* CreateWaterDropSprite(Vector2 position, float size, Color color) {
+    RayPalsSprite* sprite = CreateSprite(2);
+    if (sprite == NULL) return NULL;
+    
+    // Create the drop shape using a circle for the main part and a triangle for the pointed end
+    RayPals2DShape* dropBody = CreateCircle((Vector2){ 0, -size*0.1f }, size*0.4f, color);
+    
+    // Create drop point (triangle)
+    RayPals2DShape* dropPoint = CreateTriangle((Vector2){ 0, size*0.3f }, size*0.4f, color);
+    dropPoint->rotation = 180.0f; // Point facing downward
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, dropBody);
+    AddShapeToSprite(sprite, dropPoint);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
 }
 
 RayPalsSprite* CreateHorseSprite(Vector2 position, float size, Color bodyColor) {
@@ -1630,7 +1762,6 @@ RayPalsSprite* CreateHorseSprite(Vector2 position, float size, Color bodyColor) 
 RayPalsSprite* CreateYellowStar(Vector2 position, float size) {
     // Create a bright yellow star that's clearly visible
     Color brightYellow = (Color){ 255, 255, 0, 255 }; // Maximum brightness yellow
-    printf("Creating YELLOW star at (%.1f, %.1f) with size %.1f\n", position.x, position.y, size);
     
     // Create a star with yellow color and increased size for visibility
     RayPalsSprite* star = CreateStarSprite(position, size * 1.2f, brightYellow);
@@ -1639,9 +1770,6 @@ RayPalsSprite* CreateYellowStar(Vector2 position, float size) {
     if (star) {
         // Ensure the star is visible
         star->visible = true;
-        printf("Yellow star created successfully with %d shapes\n", star->shapeCount);
-    } else {
-        printf("ERROR: Failed to create yellow star!\n");
     }
     
     return star;
@@ -2737,8 +2865,137 @@ RayPals3DTree Create3DTree(Vector3 position, float scale, Color trunkColor, Colo
 }
 
 void Free3DTree(RayPals3DTree* tree) {
-    if (tree && tree->sprite) {
-        Free3DSprite(tree->sprite);
-        tree->sprite = NULL;
+    if (tree == NULL) return;
+    
+    Free3DSprite(tree->sprite);
+    // Note: We're not freeing the tree itself as it might be stack-allocated
+}
+
+// Create a skeleton shape
+RayPals2DShape* CreateSkeleton(Vector2 position, float size, Color color) {
+    RayPals2DShape* shape = (RayPals2DShape*)malloc(sizeof(RayPals2DShape));
+    if (shape == NULL) return NULL;
+    
+    shape->type = RAYPALS_SKELETON;
+    shape->position = position;
+    shape->size = (Vector2){ size, size * 1.5f }; // Skeletons are taller than wide
+    shape->rotation = 0.0f;
+    shape->color = color;
+    shape->filled = true;
+    shape->thickness = 2.0f;
+    shape->segments = 0;
+    shape->points = 0;
+    shape->visible = true;
+    
+    return shape;
+}
+
+RayPalsSprite* CreateSkeletonSprite(Vector2 position, float size, Color boneColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Skull (circle)
+    RayPals2DShape* skull = CreateCircle((Vector2){ 0, -size*0.35f }, size*0.15f, boneColor);
+    skull->filled = false;
+    skull->thickness = 2.0f;
+    
+    // Eye sockets (small circles)
+    RayPals2DShape* eyeLeft = CreateCircle((Vector2){ -size*0.06f, -size*0.36f }, size*0.03f, BLACK);
+    RayPals2DShape* eyeRight = CreateCircle((Vector2){ size*0.06f, -size*0.36f }, size*0.03f, BLACK);
+    
+    // Body (rectangle)
+    RayPals2DShape* spine = CreateRectangle((Vector2){ 0, 0 }, (Vector2){ size*0.05f, size*0.5f }, boneColor);
+    spine->filled = false;
+    spine->thickness = 2.0f;
+    
+    // Ribcage (horizontal lines)
+    RayPals2DShape* ribcage = CreateRectangle((Vector2){ 0, -size*0.15f }, (Vector2){ size*0.3f, size*0.25f }, boneColor);
+    ribcage->filled = false;
+    ribcage->thickness = 2.0f;
+    
+    // Arms
+    RayPals2DShape* armLeft = CreateRectangle((Vector2){ -size*0.2f, -size*0.1f }, (Vector2){ size*0.2f, size*0.05f }, boneColor);
+    armLeft->filled = false;
+    armLeft->thickness = 2.0f;
+    armLeft->rotation = 15.0f;
+    
+    RayPals2DShape* armRight = CreateRectangle((Vector2){ size*0.2f, -size*0.1f }, (Vector2){ size*0.2f, size*0.05f }, boneColor);
+    armRight->filled = false;
+    armRight->thickness = 2.0f;
+    armRight->rotation = -15.0f;
+    
+    // Legs
+    RayPals2DShape* legLeft = CreateRectangle((Vector2){ -size*0.1f, size*0.3f }, (Vector2){ size*0.05f, size*0.3f }, boneColor);
+    legLeft->filled = false;
+    legLeft->thickness = 2.0f;
+    legLeft->rotation = -15.0f;
+    
+    RayPals2DShape* legRight = CreateRectangle((Vector2){ size*0.1f, size*0.3f }, (Vector2){ size*0.05f, size*0.3f }, boneColor);
+    legRight->filled = false;
+    legRight->thickness = 2.0f;
+    legRight->rotation = 15.0f;
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, skull);
+    AddShapeToSprite(sprite, eyeLeft);
+    AddShapeToSprite(sprite, eyeRight);
+    AddShapeToSprite(sprite, spine);
+    AddShapeToSprite(sprite, ribcage);
+    AddShapeToSprite(sprite, armLeft);
+    AddShapeToSprite(sprite, armRight);
+    AddShapeToSprite(sprite, legLeft);
+    AddShapeToSprite(sprite, legRight);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateWaterfallSprite(Vector2 position, float width, float height, Color color) {
+    const int maxDrops = 30; // Maximum number of water drops
+    RayPalsSprite* sprite = CreateSprite(maxDrops);
+    if (sprite == NULL) return NULL;
+    
+    // Calculate number of drops per row and spacing
+    int dropsPerRow = 5;
+    float dropSize = width / (dropsPerRow * 1.5f);
+    float horizontalSpacing = width / dropsPerRow;
+    float verticalSpacing = dropSize * 1.2f;
+    int rows = (int)(height / verticalSpacing) + 1;
+    
+    // Add randomness to positions for natural look
+    srand(time(NULL));
+    
+    // Create multiple drops in a waterfall pattern
+    for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < dropsPerRow; col++) {
+            // Add some randomness to positioning
+            float offsetX = ((float)rand() / RAND_MAX - 0.5f) * (horizontalSpacing * 0.4f);
+            float offsetY = ((float)rand() / RAND_MAX - 0.5f) * (verticalSpacing * 0.4f);
+            
+            // Calculate position of this drop
+            Vector2 dropPos = {
+                -width/2 + col * horizontalSpacing + horizontalSpacing/2 + offsetX,
+                -height/2 + row * verticalSpacing + offsetY
+            };
+            
+            // Create smaller drops higher up, larger drops lower down
+            float sizeVariation = 0.6f + 0.4f * (float)row / rows;
+            float thisDropSize = dropSize * sizeVariation;
+            
+            // Vary color slightly for visual interest
+            Color dropColor = color;
+            dropColor.a = (unsigned char)(200 + ((float)rand() / RAND_MAX) * 55);
+            
+            // Create the water drop and add it to the sprite
+            RayPals2DShape* drop = CreateWaterDrop(dropPos, thisDropSize, 0.0f, dropColor);
+            AddShapeToSprite(sprite, drop);
+        }
     }
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
 }

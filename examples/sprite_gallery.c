@@ -49,6 +49,11 @@ int main(void)
     float scrollY = 0.0f;         // Scroll position
     const float scrollSpeed = 300.0f;
 
+    // Create water drop sprite separately
+    RayPalsSprite* waterDropSprite = CreateSprite(1);
+    RayPals2DShape* waterDrop = CreateWaterDrop((Vector2){0, 0}, 50, 0, SKYBLUE);
+    AddShapeToSprite(waterDropSprite, waterDrop);
+
     // Create all available sprites
     SpriteInfo sprites[] = {
         // Characters
@@ -60,11 +65,13 @@ int main(void)
         { CreateZombie((Vector2){0, 0}, 60, BEIGE, DARKGREEN), "Zombie", "Characters", true },
         { CreateWizard((Vector2){0, 0}, 60, PURPLE, BLUE), "Wizard", "Characters", true },
         { CreateDragon((Vector2){0, 0}, 60, RED, ORANGE), "Dragon", "Characters", true },
+        { CreateSkeletonSprite((Vector2){0, 0}, 60, WHITE), "Skeleton", "Characters", true },
         
         // Environment
         { CreateSimpleTree((Vector2){0, 0}, 80, BROWN, GREEN), "Tree", "Environment", false },
         { CreateCloud((Vector2){0, 0}, 60, WHITE), "Cloud", "Environment", false },
         { CreateHouse((Vector2){0, 0}, 80, MAROON, DARKBROWN), "House", "Environment", false },
+        { CreateCastle((Vector2){0, 0}, 100, GRAY, DARKGRAY), "Castle", "Environment", false },
         { CreateBush((Vector2){0, 0}, 60, DARKGREEN), "Bush", "Environment", false },
         { CreateRock((Vector2){0, 0}, 70, GRAY), "Rock", "Environment", false },
         { CreateFlower((Vector2){0, 0}, 60, PINK, YELLOW), "Flower", "Environment", false },
@@ -97,6 +104,10 @@ int main(void)
         { CreateLightningBolt((Vector2){0, 0}, 70, YELLOW), "Lightning", "Magic", false },
         { CreateExplosion((Vector2){0, 0}, 70, ORANGE, YELLOW), "Explosion", "Magic", true },
         { CreatePortal((Vector2){0, 0}, 70, PURPLE, BLUE), "Portal", "Magic", true },
+        { CreateWaterfallSprite((Vector2){0, 0}, 100, 150, SKYBLUE), "Waterfall", "Magic", true },
+        
+        // Special Shapes
+        { waterDropSprite, "Water Drop", "Special Shapes", true },
         
         // UI
         { CreateButton((Vector2){0, 0}, (Vector2){80, 40}, SKYBLUE, BLUE), "Button", "UI", false },
@@ -218,6 +229,14 @@ int main(void)
                         Vector2 pos = { -sinf(animTime * 3.0f) * fmaxf(0, sinf(animTime * 3.0f)) * 8.0f, 0 };
                         SetSpritePosition(sprites[i].sprite, pos);
                         SetSpriteRotation(sprites[i].sprite, sinf(animTime * 3.0f) * 3.0f);
+                    } else if (strcmp(sprites[i].name, "Water Drop") == 0) { // Water drop animation
+                        // Droplet wobble and bounce effect
+                        Vector2 pos = { 0, sinf(animTime * 2.0f) * 10.0f };
+                        SetSpritePosition(sprites[i].sprite, pos);
+                        float scale = 0.9f + 0.2f * sinf(animTime * 4.0f);
+                        SetSpriteScale(sprites[i].sprite, scale);
+                        // Slight rotation for wobble effect
+                        SetSpriteRotation(sprites[i].sprite, sinf(animTime * 1.5f) * 5.0f);
                     }
                 }
             }
