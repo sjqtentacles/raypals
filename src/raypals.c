@@ -3161,3 +3161,277 @@ RayPalsSprite* CreateGrapes(Vector2 position, float size, Color color, Color ste
     SetSpritePosition(sprite, position);
     return sprite;
 }
+
+RayPalsSprite* CreateFrankenstein(Vector2 position, float size, Color skinColor, Color clothesColor) {
+    // Create a more iconic Frankenstein's monster
+    RayPalsSprite* sprite = CreateSprite(12);  // Increased number of parts for more detail
+    if (!sprite) return NULL;
+
+    // Make sure skin color has a proper green tint
+    Color monsterSkin = skinColor;
+    monsterSkin.g = (unsigned char)fmin(255, monsterSkin.g + 40);  // Enhance green
+    monsterSkin.r = (unsigned char)fmax(0, monsterSkin.r - 20);    // Reduce red
+
+    // Create jacket/coat (slightly broader than body)
+    RayPals2DShape* coat = CreateRectangle((Vector2){0, 0}, (Vector2){size * 0.65f, size * 1.1f}, clothesColor);
+    if (coat) {
+        AddShapeToSprite(sprite, coat);
+    }
+
+    // Create shirt/undershirt
+    RayPals2DShape* shirt = CreateRectangle((Vector2){0, -size * 0.35f}, (Vector2){size * 0.4f, size * 0.4f}, (Color){240, 240, 240, 255});
+    if (shirt) {
+        AddShapeToSprite(sprite, shirt);
+    }
+
+    // Create neck
+    RayPals2DShape* neck = CreateRectangle((Vector2){0, -size * 0.6f}, (Vector2){size * 0.25f, size * 0.15f}, monsterSkin);
+    if (neck) {
+        AddShapeToSprite(sprite, neck);
+    }
+
+    // Create head (classic flat-top)
+    RayPals2DShape* headBottom = CreateRectangle((Vector2){0, -size * 0.8f}, (Vector2){size * 0.4f, size * 0.3f}, monsterSkin);
+    if (headBottom) {
+        AddShapeToSprite(sprite, headBottom);
+    }
+
+    // Create flat top of head
+    RayPals2DShape* headTop = CreateRectangle((Vector2){0, -size * 0.99f}, (Vector2){size * 0.45f, size * 0.08f}, monsterSkin);
+    if (headTop) {
+        AddShapeToSprite(sprite, headTop);
+    }
+
+    // Create neck bolts (metallic)
+    RayPals2DShape* leftBoltBase = CreateRectangle((Vector2){-size * 0.2f, -size * 0.6f}, (Vector2){size * 0.15f, size * 0.05f}, DARKGRAY);
+    if (leftBoltBase) {
+        AddShapeToSprite(sprite, leftBoltBase);
+    }
+
+    RayPals2DShape* leftBoltHead = CreateCircle((Vector2){-size * 0.28f, -size * 0.6f}, size * 0.04f, GRAY);
+    if (leftBoltHead) {
+        AddShapeToSprite(sprite, leftBoltHead);
+    }
+
+    RayPals2DShape* rightBoltBase = CreateRectangle((Vector2){size * 0.2f, -size * 0.6f}, (Vector2){size * 0.15f, size * 0.05f}, DARKGRAY);
+    if (rightBoltBase) {
+        AddShapeToSprite(sprite, rightBoltBase);
+    }
+
+    RayPals2DShape* rightBoltHead = CreateCircle((Vector2){size * 0.28f, -size * 0.6f}, size * 0.04f, GRAY);
+    if (rightBoltHead) {
+        AddShapeToSprite(sprite, rightBoltHead);
+    }
+
+    // Create eyes (deep-set)
+    RayPals2DShape* leftEye = CreateCircle((Vector2){-size * 0.1f, -size * 0.82f}, size * 0.04f, BLACK);
+    if (leftEye) {
+        AddShapeToSprite(sprite, leftEye);
+    }
+
+    RayPals2DShape* rightEye = CreateCircle((Vector2){size * 0.1f, -size * 0.82f}, size * 0.04f, BLACK);
+    if (rightEye) {
+        AddShapeToSprite(sprite, rightEye);
+    }
+
+    // Create arms (slightly shorter to appear hunched)
+    RayPals2DShape* leftArm = CreateRectangle((Vector2){-size * 0.45f, size * 0.05f}, (Vector2){size * 0.25f, size * 0.6f}, monsterSkin);
+    if (leftArm) {
+        SetShapeRotation(leftArm, 10);  // Slightly angled outward
+        AddShapeToSprite(sprite, leftArm);
+    }
+
+    RayPals2DShape* rightArm = CreateRectangle((Vector2){size * 0.45f, size * 0.05f}, (Vector2){size * 0.25f, size * 0.6f}, monsterSkin);
+    if (rightArm) {
+        SetShapeRotation(rightArm, -10);  // Slightly angled outward
+        AddShapeToSprite(sprite, rightArm);
+    }
+
+    // Create pants
+    RayPals2DShape* pants = CreateRectangle((Vector2){0, size * 0.6f}, (Vector2){size * 0.45f, size * 0.6f}, DARKBROWN);
+    if (pants) {
+        AddShapeToSprite(sprite, pants);
+    }
+
+    // Create heavy boots
+    RayPals2DShape* leftBoot = CreateRectangle((Vector2){-size * 0.15f, size * 1.0f}, (Vector2){size * 0.2f, size * 0.2f}, BLACK);
+    if (leftBoot) {
+        AddShapeToSprite(sprite, leftBoot);
+    }
+
+    RayPals2DShape* rightBoot = CreateRectangle((Vector2){size * 0.15f, size * 1.0f}, (Vector2){size * 0.2f, size * 0.2f}, BLACK);
+    if (rightBoot) {
+        AddShapeToSprite(sprite, rightBoot);
+    }
+
+    // Set sprite position
+    SetSpritePosition(sprite, position);
+
+    return sprite;
+}
+
+RayPalsSprite* CreateDracula(Vector2 position, float size, Color capeColor, Color skinColor) {
+    RayPalsSprite* sprite = CreateSprite(8);
+    if (sprite == NULL) return NULL;
+    
+    // Create a pale skin color
+    Color vampireSkin = skinColor;
+    vampireSkin.r -= 30;  // Make skin paler
+    vampireSkin.g -= 20;
+    
+    // Cape (triangle)
+    RayPals2DShape* cape = CreateTriangle((Vector2){ 0, size * 0.3f }, size * 0.8f, capeColor);
+    cape->rotation = 180.0f; // Point downward
+    
+    // Body (rectangle)
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, size * 0.1f }, (Vector2){ size * 0.3f, size * 0.4f }, BLACK);
+    
+    // Head (circle)
+    RayPals2DShape* head = CreateCircle((Vector2){ 0, -size * 0.2f }, size * 0.15f, vampireSkin);
+    
+    // Hair (triangle)
+    RayPals2DShape* hair = CreateTriangle((Vector2){ 0, -size * 0.35f }, size * 0.2f, BLACK);
+    
+    // Eyes (circles)
+    RayPals2DShape* eyeLeft = CreateCircle((Vector2){ -size * 0.05f, -size * 0.2f }, size * 0.03f, RED);
+    RayPals2DShape* eyeRight = CreateCircle((Vector2){ size * 0.05f, -size * 0.2f }, size * 0.03f, RED);
+    
+    // Fangs (triangles)
+    RayPals2DShape* fangLeft = CreateTriangle((Vector2){ -size * 0.05f, -size * 0.1f }, size * 0.05f, WHITE);
+    fangLeft->rotation = 180.0f;
+    RayPals2DShape* fangRight = CreateTriangle((Vector2){ size * 0.05f, -size * 0.1f }, size * 0.05f, WHITE);
+    fangRight->rotation = 180.0f;
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, cape);
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, hair);
+    AddShapeToSprite(sprite, eyeLeft);
+    AddShapeToSprite(sprite, eyeRight);
+    AddShapeToSprite(sprite, fangLeft);
+    AddShapeToSprite(sprite, fangRight);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateWerewolf(Vector2 position, float size, Color furColor, Color eyeColor) {
+    RayPalsSprite* sprite = CreateSprite(10);
+    if (sprite == NULL) return NULL;
+    
+    // Body (rectangle)
+    RayPals2DShape* body = CreateRectangle((Vector2){ 0, size * 0.1f }, (Vector2){ size * 0.4f, size * 0.5f }, furColor);
+    
+    // Head (circle)
+    RayPals2DShape* head = CreateCircle((Vector2){ 0, -size * 0.2f }, size * 0.2f, furColor);
+    
+    // Snout (triangle)
+    RayPals2DShape* snout = CreateTriangle((Vector2){ 0, -size * 0.1f }, size * 0.15f, furColor);
+    snout->rotation = 180.0f;
+    
+    // Ears (triangles)
+    RayPals2DShape* earLeft = CreateTriangle((Vector2){ -size * 0.15f, -size * 0.35f }, size * 0.1f, furColor);
+    earLeft->rotation = -45.0f;
+    RayPals2DShape* earRight = CreateTriangle((Vector2){ size * 0.15f, -size * 0.35f }, size * 0.1f, furColor);
+    earRight->rotation = 45.0f;
+    
+    // Eyes (circles)
+    RayPals2DShape* eyeLeft = CreateCircle((Vector2){ -size * 0.08f, -size * 0.25f }, size * 0.03f, eyeColor);
+    RayPals2DShape* eyeRight = CreateCircle((Vector2){ size * 0.08f, -size * 0.25f }, size * 0.03f, eyeColor);
+    
+    // Arms (rectangles)
+    RayPals2DShape* armLeft = CreateRectangle((Vector2){ -size * 0.25f, size * 0.1f }, (Vector2){ size * 0.15f, size * 0.3f }, furColor);
+    armLeft->rotation = -15.0f;
+    RayPals2DShape* armRight = CreateRectangle((Vector2){ size * 0.25f, size * 0.1f }, (Vector2){ size * 0.15f, size * 0.3f }, furColor);
+    armRight->rotation = 15.0f;
+    
+    // Legs (rectangles)
+    RayPals2DShape* legLeft = CreateRectangle((Vector2){ -size * 0.1f, size * 0.4f }, (Vector2){ size * 0.15f, size * 0.4f }, furColor);
+    RayPals2DShape* legRight = CreateRectangle((Vector2){ size * 0.1f, size * 0.4f }, (Vector2){ size * 0.15f, size * 0.4f }, furColor);
+    
+    // Claws (triangles)
+    RayPals2DShape* clawLeft = CreateTriangle((Vector2){ -size * 0.25f, size * 0.4f }, size * 0.05f, WHITE);
+    clawLeft->rotation = 90.0f;
+    RayPals2DShape* clawRight = CreateTriangle((Vector2){ size * 0.25f, size * 0.4f }, size * 0.05f, WHITE);
+    clawRight->rotation = -90.0f;
+    
+    // Add shapes to sprite
+    AddShapeToSprite(sprite, body);
+    AddShapeToSprite(sprite, legLeft);
+    AddShapeToSprite(sprite, legRight);
+    AddShapeToSprite(sprite, armLeft);
+    AddShapeToSprite(sprite, armRight);
+    AddShapeToSprite(sprite, head);
+    AddShapeToSprite(sprite, snout);
+    AddShapeToSprite(sprite, earLeft);
+    AddShapeToSprite(sprite, earRight);
+    AddShapeToSprite(sprite, eyeLeft);
+    AddShapeToSprite(sprite, eyeRight);
+    AddShapeToSprite(sprite, clawLeft);
+    AddShapeToSprite(sprite, clawRight);
+    
+    // Set sprite position
+    sprite->position = position;
+    
+    return sprite;
+}
+
+RayPalsSprite* CreateMummy(Vector2 position, float size, Color bandageColor, Color eyeColor) {
+    RayPalsSprite* sprite = CreateSprite(7);  // 7 shapes: body, head, 2 eyes, 2 arms, 2 legs
+    if (!sprite) return NULL;
+
+    // Create body (wrapped in bandages)
+    RayPals2DShape* body = CreateRectangle((Vector2){0, 0}, (Vector2){size * 0.6f, size * 1.2f}, bandageColor);
+    if (body) {
+        AddShapeToSprite(sprite, body);
+    }
+
+    // Create head (wrapped in bandages)
+    RayPals2DShape* head = CreateCircle((Vector2){0, -size * 0.5f}, size * 0.2f, bandageColor);
+    if (head) {
+        AddShapeToSprite(sprite, head);
+    }
+
+    // Create eyes
+    RayPals2DShape* leftEye = CreateCircle((Vector2){-size * 0.1f, -size * 0.5f}, size * 0.05f, eyeColor);
+    if (leftEye) {
+        AddShapeToSprite(sprite, leftEye);
+    }
+
+    RayPals2DShape* rightEye = CreateCircle((Vector2){size * 0.1f, -size * 0.5f}, size * 0.05f, eyeColor);
+    if (rightEye) {
+        AddShapeToSprite(sprite, rightEye);
+    }
+
+    // Create arms (wrapped in bandages)
+    RayPals2DShape* leftArm = CreateRectangle((Vector2){-size * 0.4f, 0}, (Vector2){size * 0.3f, size * 0.6f}, bandageColor);
+    if (leftArm) {
+        SetShapeRotation(leftArm, 45);
+        AddShapeToSprite(sprite, leftArm);
+    }
+
+    RayPals2DShape* rightArm = CreateRectangle((Vector2){size * 0.4f, 0}, (Vector2){size * 0.3f, size * 0.6f}, bandageColor);
+    if (rightArm) {
+        SetShapeRotation(rightArm, -45);
+        AddShapeToSprite(sprite, rightArm);
+    }
+
+    // Create legs (wrapped in bandages)
+    RayPals2DShape* leftLeg = CreateRectangle((Vector2){-size * 0.2f, size * 0.7f}, (Vector2){size * 0.3f, size * 0.6f}, bandageColor);
+    if (leftLeg) {
+        AddShapeToSprite(sprite, leftLeg);
+    }
+
+    RayPals2DShape* rightLeg = CreateRectangle((Vector2){size * 0.2f, size * 0.7f}, (Vector2){size * 0.3f, size * 0.6f}, bandageColor);
+    if (rightLeg) {
+        AddShapeToSprite(sprite, rightLeg);
+    }
+
+    // Set sprite position
+    SetSpritePosition(sprite, position);
+
+    return sprite;
+}
