@@ -1104,6 +1104,50 @@ RayPalsSprite* CreateGrape(Vector2 position, float size, Color color, Color stem
  */
 RayPalsSprite* CreateGrapes(Vector2 position, float size, Color color, Color stemColor);
 
+/**
+ * @brief Creates a Frankenstein's monster sprite
+ * 
+ * @param position The center position of the monster
+ * @param size The size of the monster
+ * @param skinColor The color of the monster's skin
+ * @param clothesColor The color of the monster's clothes
+ * @return A pointer to the created monster sprite
+ */
+RayPalsSprite* CreateFrankenstein(Vector2 position, float size, Color skinColor, Color clothesColor);
+
+/**
+ * @brief Creates a Dracula sprite
+ * 
+ * @param position The center position of Dracula
+ * @param size The size of Dracula
+ * @param capeColor The color of Dracula's cape
+ * @param skinColor The color of Dracula's skin
+ * @return A pointer to the created Dracula sprite
+ */
+RayPalsSprite* CreateDracula(Vector2 position, float size, Color capeColor, Color skinColor);
+
+/**
+ * @brief Creates a Werewolf sprite
+ * 
+ * @param position The center position of the werewolf
+ * @param size The size of the werewolf
+ * @param furColor The color of the werewolf's fur
+ * @param eyeColor The color of the werewolf's eyes
+ * @return A pointer to the created werewolf sprite
+ */
+RayPalsSprite* CreateWerewolf(Vector2 position, float size, Color furColor, Color eyeColor);
+
+/**
+ * @brief Creates a Mummy sprite
+ * 
+ * @param position The center position of the mummy
+ * @param size The size of the mummy
+ * @param bandageColor The color of the mummy's bandages
+ * @param eyeColor The color of the mummy's eyes
+ * @return A pointer to the created mummy sprite
+ */
+RayPalsSprite* CreateMummy(Vector2 position, float size, Color bandageColor, Color eyeColor);
+
 #ifdef __cplusplus
 }
 #endif

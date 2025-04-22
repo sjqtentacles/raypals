@@ -66,6 +66,10 @@ int main(void)
         { CreateWizard((Vector2){0, 0}, 60, PURPLE, BLUE), "Wizard", "Characters", true },
         { CreateDragon((Vector2){0, 0}, 60, RED, ORANGE), "Dragon", "Characters", true },
         { CreateSkeletonSprite((Vector2){0, 0}, 60, WHITE), "Skeleton", "Characters", true },
+        { CreateMummy((Vector2){0, 0}, 60, BEIGE, GREEN), "Mummy", "Characters", true },
+        { CreateFrankenstein((Vector2){0, 0}, 60, GREEN, DARKGRAY), "Frankenstein", "Characters", true },
+        { CreateDracula((Vector2){0, 0}, 60, RED, LIGHTGRAY), "Dracula", "Characters", true },
+        { CreateWerewolf((Vector2){0, 0}, 60, BROWN, YELLOW), "Werewolf", "Characters", true },
         
         // Environment
         { CreateSimpleTree((Vector2){0, 0}, 80, BROWN, GREEN), "Tree", "Environment", false },
@@ -138,7 +142,7 @@ int main(void)
         { "Red Spaceship (3D)", "3D Models", RED, YELLOW }
     };
 
-    const int spriteCount = sizeof(sprites) / sizeof(sprites[0]);
+    const int spriteCount = sizeof(sprites) / sizeof(SpriteInfo);
     const int models3DCount = sizeof(models3D) / sizeof(models3D[0]);
     const int totalItemCount = spriteCount + models3DCount;
     const int gridRows = (totalItemCount + gridCols - 1) / gridCols; // Calculate number of rows needed
