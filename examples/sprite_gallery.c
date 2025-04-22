@@ -99,6 +99,14 @@ int main(void)
         { CreateTreasureChest((Vector2){0, 0}, 70, BROWN, GOLD, true), "Treasure Chest", "Items", true },
         { CreateCannon((Vector2){0, 0}, 70, DARKGRAY, BLACK), "Cannon", "Items", true },
         
+        // Fruits
+        { CreateApple((Vector2){0, 0}, 60, RED, BROWN), "Apple", "Items", false },
+        { CreateBanana((Vector2){0, 0}, 60, YELLOW, BROWN), "Banana", "Items", false },
+        { CreateOrange((Vector2){0, 0}, 60, ORANGE, BROWN), "Orange", "Items", false },
+        { CreateWatermelon((Vector2){0, 0}, 60, DARKGREEN, PINK, BLACK), "Watermelon", "Items", false },
+        { CreateGrape((Vector2){0, 0}, 60, PURPLE, BROWN), "Grape", "Items", false },
+        { CreateGrapes((Vector2){0, 0}, 60, PURPLE, BROWN), "Grapes", "Items", false },
+        
         // Magic
         { CreateYellowStar((Vector2){0, 0}, 70), "Star", "Magic", true },
         { CreateLightningBolt((Vector2){0, 0}, 70, YELLOW), "Lightning", "Magic", false },
