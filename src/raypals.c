@@ -2999,3 +2999,165 @@ RayPalsSprite* CreateWaterfallSprite(Vector2 position, float width, float height
     
     return sprite;
 }
+
+RayPalsSprite* CreateApple(Vector2 position, float size, Color color, Color stemColor) {
+    RayPalsSprite* sprite = CreateSprite(3);
+    if (!sprite) return NULL;
+
+    // Main apple body (circle)
+    RayPals2DShape* body = CreateCircle((Vector2){0, 0}, size, color);
+    AddShapeToSprite(sprite, body);
+
+    // Stem (rectangle)
+    RayPals2DShape* stem = CreateRectangle((Vector2){0, -size/2}, (Vector2){size/8, size/3}, stemColor);
+    AddShapeToSprite(sprite, stem);
+
+    // Leaf (triangle)
+    RayPals2DShape* leaf = CreateTriangle((Vector2){size/4, -size/2}, size/4, stemColor);
+    SetShapeRotation(leaf, 45.0f);
+    AddShapeToSprite(sprite, leaf);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}
+
+RayPalsSprite* CreateBanana(Vector2 position, float size, Color color, Color stemColor) {
+    RayPalsSprite* sprite = CreateSprite(3);
+    if (!sprite) return NULL;
+
+    // Main banana body (rectangle with rounded ends)
+    RayPals2DShape* body = CreateRectangle((Vector2){0, 0}, (Vector2){size, size/3}, color);
+    AddShapeToSprite(sprite, body);
+
+    // Stem (rectangle)
+    RayPals2DShape* stem = CreateRectangle((Vector2){-size/2, -size/6}, (Vector2){size/8, size/4}, stemColor);
+    AddShapeToSprite(sprite, stem);
+
+    // Curve (triangle for banana curve)
+    RayPals2DShape* curve = CreateTriangle((Vector2){size/4, 0}, size/4, color);
+    SetShapeRotation(curve, 30.0f);
+    AddShapeToSprite(sprite, curve);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}
+
+RayPalsSprite* CreateOrange(Vector2 position, float size, Color color, Color stemColor) {
+    RayPalsSprite* sprite = CreateSprite(3);
+    if (!sprite) return NULL;
+
+    // Main orange body (circle)
+    RayPals2DShape* body = CreateCircle((Vector2){0, 0}, size, color);
+    AddShapeToSprite(sprite, body);
+
+    // Stem (rectangle)
+    RayPals2DShape* stem = CreateRectangle((Vector2){0, -size/2}, (Vector2){size/8, size/4}, stemColor);
+    AddShapeToSprite(sprite, stem);
+
+    // Leaf (triangle)
+    RayPals2DShape* leaf = CreateTriangle((Vector2){size/4, -size/2}, size/4, stemColor);
+    SetShapeRotation(leaf, 45.0f);
+    AddShapeToSprite(sprite, leaf);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}
+
+RayPalsSprite* CreateWatermelon(Vector2 position, float size, Color rindColor, Color fleshColor, Color seedColor) {
+    RayPalsSprite* sprite = CreateSprite(5);
+    if (!sprite) return NULL;
+
+    // Main watermelon body (circle)
+    RayPals2DShape* body = CreateCircle((Vector2){0, 0}, size, rindColor);
+    AddShapeToSprite(sprite, body);
+
+    // Flesh (slightly smaller circle)
+    RayPals2DShape* flesh = CreateCircle((Vector2){0, 0}, size * 0.9f, fleshColor);
+    AddShapeToSprite(sprite, flesh);
+
+    // Seeds (small circles)
+    RayPals2DShape* seed1 = CreateCircle((Vector2){size/4, size/4}, size/8, seedColor);
+    RayPals2DShape* seed2 = CreateCircle((Vector2){-size/4, -size/4}, size/8, seedColor);
+    RayPals2DShape* seed3 = CreateCircle((Vector2){size/4, -size/4}, size/8, seedColor);
+    AddShapeToSprite(sprite, seed1);
+    AddShapeToSprite(sprite, seed2);
+    AddShapeToSprite(sprite, seed3);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}
+
+RayPalsSprite* CreateGrape(Vector2 position, float size, Color color, Color stemColor) {
+    RayPalsSprite* sprite = CreateSprite(3);
+    if (!sprite) return NULL;
+
+    // Main grape body (circle)
+    RayPals2DShape* body = CreateCircle((Vector2){0, 0}, size, color);
+    AddShapeToSprite(sprite, body);
+
+    // Stem (rectangle)
+    RayPals2DShape* stem = CreateRectangle((Vector2){0, -size/2}, (Vector2){size/8, size/3}, stemColor);
+    AddShapeToSprite(sprite, stem);
+
+    // Highlight (small circle)
+    RayPals2DShape* highlight = CreateCircle((Vector2){-size/4, -size/4}, size/4, (Color){255, 255, 255, 128});
+    AddShapeToSprite(sprite, highlight);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}
+
+RayPalsSprite* CreateGrapes(Vector2 position, float size, Color color, Color stemColor) {
+    RayPalsSprite* sprite = CreateSprite(9);  // Capacity for main stem and 8 grapes
+    if (!sprite) return NULL;
+
+    // Main stem (rectangle)
+    RayPals2DShape* stem = CreateRectangle((Vector2){0, -size/2}, (Vector2){size/8, size/3}, stemColor);
+    AddShapeToSprite(sprite, stem);
+
+    // Create individual grapes (just the body and highlight, no stems)
+    // Top row
+    RayPals2DShape* grape1 = CreateCircle((Vector2){-size/4, -size/4}, size/4, color);
+    RayPals2DShape* grape2 = CreateCircle((Vector2){0, -size/4}, size/4, color);
+    RayPals2DShape* grape3 = CreateCircle((Vector2){size/4, -size/4}, size/4, color);
+    
+    // Middle row
+    RayPals2DShape* grape4 = CreateCircle((Vector2){-size/3, 0}, size/4, color);
+    RayPals2DShape* grape5 = CreateCircle((Vector2){0, 0}, size/4, color);
+    RayPals2DShape* grape6 = CreateCircle((Vector2){size/3, 0}, size/4, color);
+    
+    // Bottom row
+    RayPals2DShape* grape7 = CreateCircle((Vector2){-size/4, size/4}, size/4, color);
+    RayPals2DShape* grape8 = CreateCircle((Vector2){size/4, size/4}, size/4, color);
+
+    // Add highlights to each grape
+    RayPals2DShape* highlight1 = CreateCircle((Vector2){-size/4 - size/8, -size/4 - size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight2 = CreateCircle((Vector2){-size/8, -size/4 - size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight3 = CreateCircle((Vector2){size/4 - size/8, -size/4 - size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight4 = CreateCircle((Vector2){-size/3 - size/8, -size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight5 = CreateCircle((Vector2){-size/8, -size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight6 = CreateCircle((Vector2){size/3 - size/8, -size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight7 = CreateCircle((Vector2){-size/4 - size/8, size/4 - size/8}, size/8, (Color){255, 255, 255, 128});
+    RayPals2DShape* highlight8 = CreateCircle((Vector2){size/4 - size/8, size/4 - size/8}, size/8, (Color){255, 255, 255, 128});
+
+    // Add all grapes and highlights to the sprite
+    AddShapeToSprite(sprite, grape1);
+    AddShapeToSprite(sprite, grape2);
+    AddShapeToSprite(sprite, grape3);
+    AddShapeToSprite(sprite, grape4);
+    AddShapeToSprite(sprite, grape5);
+    AddShapeToSprite(sprite, grape6);
+    AddShapeToSprite(sprite, grape7);
+    AddShapeToSprite(sprite, grape8);
+    AddShapeToSprite(sprite, highlight1);
+    AddShapeToSprite(sprite, highlight2);
+    AddShapeToSprite(sprite, highlight3);
+    AddShapeToSprite(sprite, highlight4);
+    AddShapeToSprite(sprite, highlight5);
+    AddShapeToSprite(sprite, highlight6);
+    AddShapeToSprite(sprite, highlight7);
+    AddShapeToSprite(sprite, highlight8);
+
+    SetSpritePosition(sprite, position);
+    return sprite;
+}

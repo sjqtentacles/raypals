@@ -1037,6 +1037,73 @@ RayPals2DShape* CreateWaterDrop(Vector2 position, float size, float rotation, Co
  */
 RayPalsSprite* CreateWaterfallSprite(Vector2 position, float width, float height, Color color);
 
+/**
+ * @brief Creates an apple sprite
+ * 
+ * @param position The position of the apple
+ * @param size The size of the apple
+ * @param color The color of the apple
+ * @param stemColor The color of the apple stem
+ * @return A pointer to the created apple sprite
+ */
+RayPalsSprite* CreateApple(Vector2 position, float size, Color color, Color stemColor);
+
+/**
+ * @brief Creates a banana sprite
+ * 
+ * @param position The position of the banana
+ * @param size The size of the banana
+ * @param color The color of the banana
+ * @param stemColor The color of the banana stem
+ * @return A pointer to the created banana sprite
+ */
+RayPalsSprite* CreateBanana(Vector2 position, float size, Color color, Color stemColor);
+
+/**
+ * @brief Creates an orange sprite
+ * 
+ * @param position The position of the orange
+ * @param size The size of the orange
+ * @param color The color of the orange
+ * @param stemColor The color of the orange stem
+ * @return A pointer to the created orange sprite
+ */
+RayPalsSprite* CreateOrange(Vector2 position, float size, Color color, Color stemColor);
+
+/**
+ * @brief Creates a watermelon sprite
+ * 
+ * @param position The position of the watermelon
+ * @param size The size of the watermelon
+ * @param rindColor The color of the watermelon rind
+ * @param fleshColor The color of the watermelon flesh
+ * @param seedColor The color of the watermelon seeds
+ * @return A pointer to the created watermelon sprite
+ */
+RayPalsSprite* CreateWatermelon(Vector2 position, float size, Color rindColor, Color fleshColor, Color seedColor);
+
+/**
+ * @brief Creates a grape sprite
+ * 
+ * @param position The position of the grape
+ * @param size The size of the grape
+ * @param color The color of the grape
+ * @param stemColor The color of the grape stem
+ * @return A pointer to the created grape sprite
+ */
+RayPalsSprite* CreateGrape(Vector2 position, float size, Color color, Color stemColor);
+
+/**
+ * @brief Creates a cluster of grapes sprite
+ * 
+ * @param position The position of the grape cluster
+ * @param size The size of the grape cluster
+ * @param color The color of the grapes
+ * @param stemColor The color of the grape stems
+ * @return A pointer to the created grape cluster sprite
+ */
+RayPalsSprite* CreateGrapes(Vector2 position, float size, Color color, Color stemColor);
+
 #ifdef __cplusplus
 }
 #endif
